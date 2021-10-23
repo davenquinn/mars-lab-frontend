@@ -54,7 +54,11 @@ module.exports = {
   module: {
     unknownContextCritical: false,
     rules: [
-      { test: /\.(js|jsx|ts|tsx)$/, use: [babelLoader], exclude },
+      {
+        test: /\.(js|jsx|ts|tsx)$/,
+        use: [babelLoader],
+        exclude,
+      },
       {
         test: /\.styl$/,
         use: ["style-loader", cssModuleLoader, "stylus-loader"],
@@ -94,10 +98,11 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".jsx"],
     alias: {
       // CesiumJS module name
+      cesium: path.resolve(__dirname, "node_modules", "cesium"),
       cesiumSource: path.resolve(__dirname, cesiumSource),
       "cesium-viewer": path.resolve(
         __dirname,
-        "bundledDeps",
+        "packages",
         "cesium-viewer",
         "src"
       ),

@@ -1,6 +1,7 @@
 {
   "name": "syrtis-jezero-frontend",
   "version": "0.6.0",
+  "private": true,
   "description": "",
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -33,7 +34,6 @@
   },
   "main": "webpack.config.js",
   "scripts": {
-    "preinstall": "linklocal",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch:text": "ls text/*.md | entr make",
     "dev": "npm run watch:text & webpack --watch",
@@ -46,11 +46,14 @@
   ],
   "dependencies": {
     "@macrostrat/cesium-martini": "file:./packages/cesium-martini",
+    "@macrostrat/cesium-viewer": "file:./packages/cesium-viewer",
     "@macrostrat/hyper": "^1.2.6",
     "@macrostrat/ui-components": "^0.4.6",
     "@mapbox/sphericalmercator": "^1.1.0",
+    "@open-wc/webpack-import-meta-loader": "^0.4.7",
     "@types/underscore": "^1.10.24",
     "@znemz/cesium-navigation": "^4.0.0",
+    "cesium": "1.80.0",
     "classnames": "^2.2.6",
     "d3-array": "^2.5.0",
     "d3-format": "^1.4.4",
