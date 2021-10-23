@@ -1,0 +1,52 @@
+.text
+  scroll-snap-type: y mandatory
+  scroll-behavior: smooth
+  :global
+    @require "./typography.styl"
+
+
+.location-link
+  border-left 0.5em solid #eee
+  margin-left -1em
+  padding-left 0.5em
+  min-height 1em
+  margin-bottom 2em
+  scroll-snap-align: center;
+  cursor: pointer;
+  //background-color: var(--accent-background-light)
+  //cursor: pointer
+  //&:hover
+  //  border-left-color var(--accent-background-light)
+  &:global(.active)
+    border-left-color var(--accent-background)
+
+.scroll-indicator
+  position fixed
+  height 5px
+  background-color: var(--accent-background)
+  left 0
+  top 250px
+  width 10px
+
+:global
+  #refs
+    font-size 0.8em
+    color: #444
+    line-height 1
+    p
+      text-indent -1em
+      margin-left 1em
+
+  .side-note
+    font-size 0.8em
+    color #888
+
+.page-controls
+  position sticky
+  top 0
+  background-color white
+  margin-bottom 4px
+  border-bottom 1px solid #ccc
+
+.text-panel
+  position relative

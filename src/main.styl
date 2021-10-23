@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500&family=Source+Serif+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap');
+@require "./text-panel/main.styl"
+
+$main=rgb(250, 128, 114)
+
+:root
+  --accent-color: $main
+  --accent-dark: darken($main, 25%)
+  --accent-darker: darken($main, 35%)
+  --accent-background: lighten($main, 20)
+  --accent-background-light: lighten($main, 25)
+  --main-font: "Source Serif Pro", "Times New Roman", serif
+  --mono-font: "Source Code Pro", mono
+
+link_button()
+  text-decoration none
+  font-weight 300
+  display block
+  color var(--accent-dark)
+  padding 0.2em 0.5em
+  margin-right 0.5em
+  border-radius 3px
+  cursor pointer
+  &:hover
+    background-color var(--accent-background-light)
+  &:visited
+    color var(--accent-dark)
+  &.is-active
+    background-color var(--accent-background)
+
+:global
+  *
+    font-family: var(--main-font)
+    box-sizing: border-box;
+
+  body
+    margin 0
+    padding 0
+    font-size 16px
+    line-height: 1.5
+
+  p
+    text-align: justify;
+
+  // links
+  a
+    color var(--accent-dark)
+    &:visited
+      color var(--accent-darker)
+
+  ul
+    padding-left 1em
+
+  code
+    font-family: "Source Code Pro", mono
+    font-weight 400
+
+  .leaflet-container
+    height: 100vh
+
+  // .cesium-viewer
+  //   cursor move
+
+  div.lower-right
+    z-index: 5
+    position fixed
+    right 5
+    bottom 5
+    max-width 300px
+
+  .cesium-credit-logoContainer
+    display none !important
+
+  div.positions-panel
+    a.fly-to
+      color: var(--accent-color)
+      cursor: pointer
+
+  .copy-position-button, .show-ui-button
+    z-index: 50
+    position: absolute;
+    text-decoration: underline;
+    cursor pointer
+    // emulate Cesium's default text shadow
+    text-shadow: rgb(0, 0, 0) 0px 0px 2px
+
+  .copy-position-button
+    color: white
+    left 80px
+    bottom 2.5px
+    font-size 10px
+
+
+  .show-ui-button
+    top 2px
+    left 10px
+    font-weight bold
+    color: var(--accent-color)
+
+  .distance-legend
+    background: transparent !important
+    border: none !important
+
+    .distance-legend-scale-bar
+      border-left-color: white
+      border-right-color: white
+      border-bottom-color: white
+      border-width: 2px
+
+    .distance-legend-label
+      font-family: var(--main-font)
+      font-weight 500
+
+  .map-sources
+    h4
+      margin 0
+    font-size 0.8em
+    padding 0 1em
+    ul
+      margin-top 0
+      list-style none
+      padding-left 0
+
+  .layer-button
+    display block
+    link_button()
+
+  #changelog
+    font-size 0.8em
+    color #444
+    line-height 1em
+    h1, h2, h3, h4
+      font-weight 600
+    h1
+      font-size 1.4em
+    h2
+      font-size 1.2em
+
+.app-ui
+  display flex
+  flex-direction: row
+  overflow-x: hidden;
+  height 100vh
+
+.right
+  flex-grow 1
+  position relative
+
+.layer-button
+  margin-bottom 0.5em
+
+.left
+  height 100vh
+  .left-panel
+    overflow-y scroll
+    overflow-x hidden
+    height: 100vh
+    position relative
+  .content, .modal-content
+    width 100%
+    padding 2em
+  min-width 25em
+  max-width 20%
+  position relative
+
+@media screen and (max-width 600px)
+  .app-ui
+    flex-flow: column-reverse;
+    width 100vw
+
+  .left
+    height 45vh
+    width 100%
+    max-width: none;
+    .left-panel
+      height 45vh
+
+nav
+  text-align: center
+  ul
+    list-style none
+    display flex
+    flex-direction row
+    align-items space-between
+    padding-left: 0
+    margin-right: -0.5em
+    justify-content: baseline
+  li
+    vertical-align: baseline
+    a
+      link_button()
+      font-size 1.2em
+
+.positions
+  color: #ccc !important
+  &:visited
+    color: #ccc
+  &.is-active
+    background-color #eee
+
+.title-block
+  h1,h2,h3,h4
+    margin-bottom 0.2em
+    margin-top 0
+    padding-bottom 0
+    font-weight: 600
+    line-height: 1.0
+  .title
+    font-size 1.8rem
+    font-weight 700
+    padding-bottom 0.6em
+  .subtitle
+    padding-top 0
+    font-weight 300
+    color #888
+  .auth-affil
+    //display flex
+    //flex-direction: row
+    //justify-content baseline
+    //align-items: space-between
+    font-weight 500
+    color #888
+    margin-top 0.5em
+    .author
+      min-width 40%
+      margin-right 1em
+      font-weight 600
+      font-style italic
+    .affiliation
+      font-size 0.9em
+    &>*
+      a
+        color: inherit
+        &:visited
+          color: inherit
+.software-info, .page-controls
+  color #888
+  font-weight 300
+  font-size 0.8em
+  p
+    margin 0.4em 0 0.2em
+
+
+
+.control .selected
+  font-weight 600
+
+.unit-result
+  display flex
+  flex-direction: row
+  align-content: center
+  line-height 1
+  margin-bottom 1em
+  h4
+    margin-top 0
+    margin-bottom 0.2em
+  .unit-swatch
+    width 40px
+    height 40px
+    border-radius: 4px
+    margin-right 1em
