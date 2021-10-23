@@ -230,7 +230,7 @@ const globeState = createInitialState({
     once: true,
   }),
   namedLocation,
-  verticalExaggeration: ve ?? 1.5,
+  verticalExaggeration: ve ?? 1,
   // Set a lower display quality for mobile
   displayQuality: window.matchMedia("(max-width: 600px)").matches
     ? DisplayQuality.Low

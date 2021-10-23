@@ -64,17 +64,15 @@ const MainUI = ({ scrollParentRef }) => {
   return h("div.content", [
     h(TitleBlock),
     h(Switch, [
-      h(Route, { path: "/changelog" }, [
-        h(TextPanel, { html: changelogText, scrollParentRef }),
-      ]),
-      h(Route, { path: "/about" }, [
-        h(TextPanel, { html: viewerText, scrollParentRef }),
-      ]),
+      // h(Route, { path: "/changelog" }, [
+      //   h(TextPanel, { html: changelogText, scrollParentRef }),
+      // ]),
+      // h(Route, { path: "/about" }, [
+      //   h(TextPanel, { html: viewerText, scrollParentRef }),
+      // ]),
       h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
       h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
-      h(Route, { path: "/" }, [
-        h(TextPanel, { html: mainText, scrollParentRef }),
-      ]),
+      h(Route, { path: "/" }, null),
     ]),
   ]);
 };
@@ -82,34 +80,20 @@ const MainUI = ({ scrollParentRef }) => {
 const UI = () => {
   const ref = useRef();
 
-  return h(
-    Router,
-    { basename: baseURL },
-    h("div.left-panel", { ref }, h(MainUI, { scrollParentRef: ref }))
-  );
+  return h(Router, { basename: baseURL }, [
+    h("div.left-panel", { ref }, h(MainUI, { scrollParentRef: ref })),
+    h("div.spacer"),
+  ]);
 };
 
-function ShowUIButton(props) {
-  const { onClick, enabled } = props;
-  const text = enabled ? "Hide UI" : "Show UI";
-  return h("a.show-ui-button", { onClick }, text);
-}
-
 const AppMain = () => {
-  const [showUI, setShowUI] = useState(true);
   const mapBackend = useSelector((s) => s.mapBackend);
 
   return h("div.app-ui", [
-    h.if(showUI)("div.left", null, h(UI)),
-    h("div.right", null, [
+    h("div.main-ui", null, h(UI)),
+    h("div.main-map", null, [
       mapBackend == MapBackend.Globe ? h(MemViewer) : h(FlatMap),
       h(CopyPositionButton),
-      h(ShowUIButton, {
-        enabled: showUI,
-        onClick() {
-          setShowUI(!showUI);
-        },
-      }),
     ]),
   ]);
 };

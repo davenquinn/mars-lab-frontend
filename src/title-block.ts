@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { DisplayQuality } from "cesium-viewer";
 import { MapBackend } from "./state";
+import { Icon } from "@blueprintjs/core";
 
 const h = hyperStyled(styles);
 
@@ -107,8 +108,6 @@ const MiniControls = () => {
     h(ExaggerationControl),
     ", ",
     h(MapTypeControl),
-    // ", ",
-    // h(DebuggerControl),
     ".",
   ]);
 };
@@ -123,11 +122,7 @@ const SoftwareInfo = () => {
       h("a", { href: GITHUB_REV_LINK }, GIT_COMMIT_HASH),
       ")",
     ]),
-    h(
-      "p.directions",
-      "Navigate by scrolling. \
-       Drag the 3D display to pan, Ctrl+drag to rotate."
-    ),
+    h("p.directions", "Drag the 3D display to pan, Ctrl+drag to rotate."),
     h(MiniControls),
   ]);
 };
@@ -137,28 +132,28 @@ const Navbar = () => {
     "nav",
     null,
     h("ul", [
-      h(Link, { to: "/", exact: true }, "Story"),
-      h(Link, { to: "/about" }, "The viewer"),
-      h(Link, { to: "/layers" }, "Layers"),
-      h(Link, { to: "/list", className: styles["positions"] }, "#"),
+      h(Link, { to: "/", exact: true }, h(Icon, { icon: "home" })),
+      //h(Link, { to: "/about" }, "The viewer"),
+      h(Link, { to: "/layers" }, h(Icon, { icon: "layers" })),
+      h(Link, { to: "/settings" }, h(Icon, { icon: "settings" })),
+      h(
+        Link,
+        { to: "/list", className: styles["positions"] },
+        h(Icon, { icon: "map-marker" })
+      ),
     ])
   );
 };
 
 const TitleBlock = () => {
   return h("div.title-block", [
-    h("h1.title", [
-      "Jezero Crater's context within northeast Syrtis Major",
-      h("span.subtitle", " — a multiscale interactive explorer"),
-    ]),
+    h("h1.title", ["Mars Lab"]),
     h("div.auth-affil", [
-      h(
-        "h3.author",
-        null,
-        h("a", { href: "https://davenquinn.com" }, "Daven Quinn")
-      ),
+      h("h3.author", null),
       h("h4.affiliation", [
-        "University of Wisconsin – Madison, ",
+        h("a", { href: "https://davenquinn.com" }, "Daven Quinn"),
+        ", ",
+        "UW – Madison, ",
         h("a", { href: "https://macrostrat.org" }, "Macrostrat"),
       ]),
     ]),

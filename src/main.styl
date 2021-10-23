@@ -136,9 +136,8 @@ link_button()
     h2
       font-size 1.2em
 
-.app-ui
-  display flex
-  flex-direction: row
+.app-ui, .main-map
+  width: 100vw
   overflow-x: hidden;
   height 100vh
 
@@ -149,16 +148,26 @@ link_button()
 .layer-button
   margin-bottom 0.5em
 
-.left
-  height 100vh
+.main-ui
+  position: fixed
+  z-index 10
+  top 0em
+  left 0em
+  bottom 0
+  display flex
   .left-panel
     overflow-y scroll
     overflow-x hidden
-    height: 100vh
+    margin: 1em
     position relative
+    background: white
+    border-radius: 6px
+  .spacer
+    flex-grow 1
   .content, .modal-content
     width 100%
-    padding 2em
+    padding 1em
+    padding-bottom 0
   min-width 25em
   max-width 20%
   position relative
@@ -208,7 +217,6 @@ nav
   .title
     font-size 1.8rem
     font-weight 700
-    padding-bottom 0.6em
   .subtitle
     padding-top 0
     font-weight 300
