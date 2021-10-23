@@ -1,0 +1,9 @@
+[submodule "packages/cesium-viewer"]
+	path = packages/cesium-viewer
+	url = git://github.com/UW-Macrostrat/cesium-viewer.git
+[submodule "packages/cesium-martini"]
+	path = packages/cesium-martini
+	url = git://github.com/davenquinn/cesium-martini.git
+[submodule "packages/mvt-imagery-provider"]
+	path = packages/mvt-imagery-provider
+	url = git://github.com/davenquinn/MVTImageryProvider.git
