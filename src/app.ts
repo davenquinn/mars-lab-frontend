@@ -2,7 +2,7 @@ import { hyperStyled } from "@macrostrat/hyper";
 import { APIProvider } from "@macrostrat/ui-components";
 import { useRef, useState, memo } from "react";
 import { Provider, useSelector, useDispatch } from "react-redux";
-import { SyrtisTerrainProvider, ImageryLayers } from "./layers";
+import { MarsTerrainProvider, ImageryLayers } from "./layers";
 
 import CesiumViewer from "cesium-viewer";
 import { SelectedPoint } from "cesium-viewer/position";
@@ -23,7 +23,7 @@ import { SelectedLocation } from "./selected-location";
 
 const h = hyperStyled(styles);
 
-const terrainProvider = new SyrtisTerrainProvider();
+const terrainProvider = new MarsTerrainProvider();
 
 const MapSelectedPoint = () => {
   const position = useSelector((d) => d.selectedLocation);

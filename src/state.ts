@@ -247,7 +247,7 @@ const initialState: AppState = {
     (Array.isArray(overlays) ? overlays : [overlays]) ?? []
   ),
   mapBackend: mapBackend == "2d" ? MapBackend.Flat : MapBackend.Globe,
-  debug: debug != null,
+  debug: true,
 };
 
 let store = createStore(

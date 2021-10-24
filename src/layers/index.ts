@@ -4,6 +4,7 @@ import {
   WebMapTileServiceImageryProvider,
   UrlTemplateImageryProvider,
   TileMapServiceImageryProvider,
+  ArcGisMapServerImageryProvider,
 } from "cesium";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
@@ -28,16 +29,19 @@ const MARS_RADIUS_SCALAR = 3390 / 6371;
 
 const CTXLayer = (props: GeoLayerProps) => {
   let ctx = useRef(
-    new WebMapTileServiceImageryProvider({
-      url:
-        process.env.API_BASE_URL +
-        "/tiles/ctx-global/{TileMatrix}/{TileCol}/{TileRow}.png",
+    // new ArcGisMapServerImageryProvider({
+    //   url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer",
+    // })
+    new UrlTemplateImageryProvider({
+      url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer/tile/{z}/{x}/{y}?blankTile=false",
       style: "default",
       format: "image/png",
+      tileWidth: 512,
+      tileHeight: 512,
       maximumLevel: 14,
       layer: "",
       tileMatrixSetID: "",
-      credit: new Credit("Murray Lab / CTX "),
+      credit: new Credit("Murray Lab / CTX / ArcGIS"),
     })
   );
 
@@ -47,9 +51,7 @@ const CTXLayer = (props: GeoLayerProps) => {
 const HiRISELayer = (props: GeoLayerProps) => {
   let ctx = useRef(
     new WebMapTileServiceImageryProvider({
-      url:
-        process.env.API_BASE_URL +
-        "/tiles/hirise-jezero-trn/{TileMatrix}/{TileCol}/{TileRow}.png",
+      url: `http://argyre.geoscience.wisc.edu/tiles/hirise-mosaic/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`,
       style: "default",
       format: "image/png",
       maximumLevel: 18,
@@ -68,8 +70,7 @@ const HiRISELayer = (props: GeoLayerProps) => {
 const MOLALayer = (props: GeoLayerProps) => {
   let ctx = useRef(
     new TileMapServiceImageryProvider({
-      url:
-        "https://s3-eu-west-1.amazonaws.com/whereonmars.cartodb.net/mola-gray",
+      url: "https://s3-eu-west-1.amazonaws.com/whereonmars.cartodb.net/mola-gray",
       fileExtension: "png",
       maximumLevel: 6,
       layer: "",
@@ -104,7 +105,7 @@ let bounds = {
   n: 23,
 };
 
-class SyrtisTerrainProvider extends MapboxTerrainProvider {
+class MarsTerrainProvider extends MapboxTerrainProvider {
   RADIUS_SCALAR = MARS_RADIUS_SCALAR;
   meshErrorScalar = 1;
   levelOfDetailScalar = 8;
@@ -114,17 +115,13 @@ class SyrtisTerrainProvider extends MapboxTerrainProvider {
   );
 
   constructor(opts = {}) {
-    super({ ...opts, highResolution: true });
+    super({ ...opts, highResolution: false });
   }
 
   buildTileURL(tileCoords: TileCoordinates) {
     const { z, x, y } = tileCoords;
     const hires = this.highResolution ? "@2x" : "";
-    return `${process.env.API_BASE_URL}/tiles/terrain/${z}/${x}/${y}${hires}.png`;
-  }
-
-  preprocessHeight(x, y, height) {
-    return height < 4000 ? height : -4000;
+    return `http://argyre.geoscience.wisc.edu/tiles/global-dem-rgb/tiles/${z}/${x}/${y}${hires}.png`;
   }
 
   getTileDataAvailable(x, y, z) {
@@ -158,7 +155,7 @@ const ImageryLayers = () => {
   const visibleMaps = useSelector((s) => s.visibleMaps);
   return h([
     h(ImageryLayerCollection, null, [
-      h(MOLALayer),
+      h.if(mapLayer == ActiveMapLayer.OpenPlanetaryHillshade)(MOLALayer),
       h.if(mapLayer == ActiveMapLayer.CTX)(CTXLayer),
       h.if(mapLayer == ActiveMapLayer.Hillshade)(MarsHillshadeLayer),
     ]),
@@ -177,6 +174,6 @@ export {
   MOLALayer,
   HiRISELayer,
   MarsHillshadeLayer,
-  SyrtisTerrainProvider,
+  MarsTerrainProvider,
   ImageryLayers,
 };
