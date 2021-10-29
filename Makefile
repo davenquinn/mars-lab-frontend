@@ -2,7 +2,7 @@ BIBTEX_LIBRARY:=~/Resources/Papers/library.bib
 
 REF_LIST:=text/ref-list.txt
 
-all: text/output/main.html text/output/viewer.html text/output/changelog.html
+all: build
 
 text/references.bib: text/main.md $(BIBTEX_LIBRARY)
 	cat $< | text/scripts/find-refs > $(REF_LIST)
@@ -17,3 +17,6 @@ text/output/%.html: text/%.md text/references.bib
 		--bibliography $(word 2,$^) \
 		--metadata link-citations=true \
 		--filter pandoc-citeproc > $@
+
+build:
+	scripts/docker-dist
