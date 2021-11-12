@@ -81,7 +81,7 @@ const HiRISELayer = (props: GeoLayerProps) => {
 
 const OrthoLayer = (props: GeoLayerProps) => {
   return h(BaseImageryLayer, {
-    url: `http://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,600`,
+    url: `http://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,255`,
     credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
   });

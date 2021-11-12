@@ -108,8 +108,8 @@ const MiniControls = () => {
     h(ExaggerationControl),
     ", ",
     h(MapTypeControl),
-    //", ",
-    //h(DebuggerControl),
+    ", ",
+    h(DebuggerControl),
     ".",
   ]);
 };
