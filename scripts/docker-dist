@@ -11,7 +11,7 @@ if [ $branch = "main" ]; then
   tags="$tags -t $image:latest"
 fi
 
-docker build $tags .
+docker build --build-arg PUBLIC_URL=/app $tags .
 
 if [ $1 == "--no-push" ]; then
   exit 0

@@ -1,6 +1,14 @@
 import { ActiveMapLayer } from "cesium-viewer/actions";
 
 export default {
+  images: {
+    longitude: 149.465,
+    latitude: -2.818,
+    height: 43104.555,
+    heading: 4.498,
+    pitch: -58.124,
+    roll: 0.005,
+  },
   initial: {
     longitude: 77.433,
     latitude: 18.411,

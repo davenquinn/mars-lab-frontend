@@ -74,7 +74,12 @@ export function LayerSelectorPanel() {
         "High-resolution imagery (up to 25 cm/pixel). Currently limited to the Perseverance landing site.",
       layer: OverlayLayer.HiRISE,
     }),
-    h(LayerToggle, { name: "Rover position", layer: OverlayLayer.Rover }),
+    h(LayerToggle, {
+      name: "Orthoimagery",
+      layer: OverlayLayer.Ortho,
+      description: "Orthoimagery for elevation models",
+    }),
+    //h(LayerToggle, { name: "Rover position", layer: OverlayLayer.Rover }),
     h("h3", "Base layers"),
     h(BaseLayerSelector),
   ]);

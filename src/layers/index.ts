@@ -29,11 +29,8 @@ const MARS_RADIUS_SCALAR = 3390 / 6371;
 
 const CTXLayer = (props: GeoLayerProps) => {
   let ctx = useRef(
-    // new ArcGisMapServerImageryProvider({
-    //   url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer",
-    // })
     new UrlTemplateImageryProvider({
-      url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer/tile/{z}/{x}/{y}?blankTile=false",
+      url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer/tile/{z}/{y}/{x}?blankTile=false",
       style: "default",
       format: "image/png",
       tileWidth: 512,
@@ -41,6 +38,7 @@ const CTXLayer = (props: GeoLayerProps) => {
       maximumLevel: 14,
       layer: "",
       tileMatrixSetID: "",
+      tilingScheme: new Cesium.GeographicTilingScheme(),
       credit: new Credit("Murray Lab / CTX / ArcGIS"),
     })
   );
@@ -48,22 +46,44 @@ const CTXLayer = (props: GeoLayerProps) => {
   return h(ImageryLayer, { imageryProvider: ctx.current, ...props });
 };
 
-const HiRISELayer = (props: GeoLayerProps) => {
+function BaseImageryLayer(
+  props: GeoLayerProps & { url: string; credit: string }
+) {
+  const { url, credit, ...rest } = props;
+  let _credit: any = null;
+  if (credit != null) {
+    _credit = new Credit(credit);
+  }
   let ctx = useRef(
     new WebMapTileServiceImageryProvider({
-      url: `http://argyre.geoscience.wisc.edu/tiles/hirise-mosaic/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`,
+      url,
       style: "default",
       format: "image/png",
       maximumLevel: 18,
       layer: "",
       tileMatrixSetID: "",
-      credit: new Credit("USGS"),
+      credit: _credit,
     })
   );
   return h(ImageryLayer, {
     imageryProvider: ctx.current,
+    ...rest,
+  });
+}
+
+const HiRISELayer = (props: GeoLayerProps) => {
+  return h(BaseImageryLayer, {
+    url: `http://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`,
+    credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
-    ...props,
+  });
+};
+
+const OrthoLayer = (props: GeoLayerProps) => {
+  return h(BaseImageryLayer, {
+    url: `http://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,600`,
+    credit: "USGS/HiRISE",
+    colorToAlpha: Cesium.Color.BLACK,
   });
 };
 
@@ -109,7 +129,6 @@ class MarsTerrainProvider extends MapboxTerrainProvider {
   RADIUS_SCALAR = MARS_RADIUS_SCALAR;
   meshErrorScalar = 1;
   levelOfDetailScalar = 8;
-  fillValue = -4000;
   credit = new Credit(
     "University of Arizona - HiRISE, CTX, PDS Imaging Node, HRSC Mission Team"
   );
@@ -121,33 +140,33 @@ class MarsTerrainProvider extends MapboxTerrainProvider {
   buildTileURL(tileCoords: TileCoordinates) {
     const { z, x, y } = tileCoords;
     const hires = this.highResolution ? "@2x" : "";
-    return `http://argyre.geoscience.wisc.edu/tiles/global-dem-rgb/tiles/${z}/${x}/${y}${hires}.png`;
+    return `http://argyre.geoscience.wisc.edu/tiles/elevation-mosaic/tiles/${z}/${x}/${y}${hires}.png?resampling_method=bilinear`;
   }
 
   getTileDataAvailable(x, y, z) {
     // const [w, s, e, n] = merc.bbox(x, y, z);
     // if (e < bounds.w || w > bounds.e || n < bounds.s || s > bounds.n)
     //   return false;
-    return z <= 13;
+    return z <= 15;
   }
 }
 
-const CRISMLayer = (props: GeoLayerProps) => {
-  let ctx = useRef(
-    new WebMapTileServiceImageryProvider({
-      url:
-        process.env.API_BASE_URL +
-        "/tiles/crism/{TileMatrix}/{TileCol}/{TileRow}.png",
-      style: "default",
-      format: "image/png",
-      maximumLevel: 11,
-      layer: "",
-      tileMatrixSetID: "",
-      credit: new Credit("JHU-APL/CRISM"),
-    })
-  );
-  return h(ImageryLayer, { imageryProvider: ctx.current, ...props });
-};
+// const CRISMLayer = (props: GeoLayerProps) => {
+//   let ctx = useRef(
+//     new WebMapTileServiceImageryProvider({
+//       url:
+//         process.env.API_BASE_URL +
+//         "/tiles/crism/{TileMatrix}/{TileCol}/{TileRow}.png",
+//       style: "default",
+//       format: "image/png",
+//       maximumLevel: 11,
+//       layer: "",
+//       tileMatrixSetID: "",
+//       credit: new Credit("JHU-APL/CRISM"),
+//     })
+//   );
+//   return h(ImageryLayer, { imageryProvider: ctx.current, ...props });
+// };
 
 const ImageryLayers = () => {
   const mapLayer = useSelector((s) => s.mapLayer);
@@ -161,15 +180,15 @@ const ImageryLayers = () => {
     ]),
     h(ImageryLayerCollection, null, [
       h.if(overlays.has(OverlayLayer.HiRISE))(HiRISELayer),
-      h.if(overlays.has(OverlayLayer.CRISM))(CRISMLayer),
-      h.if(overlays.has(OverlayLayer.Geology))(GeologyLayer, { visibleMaps }),
-      h.if(overlays.has(OverlayLayer.Rover))(RoverPosition),
+      h.if(overlays.has(OverlayLayer.Ortho))(OrthoLayer),
+      //h.if(overlays.has(OverlayLayer.CRISM))(CRISMLayer),
+      //h.if(overlays.has(OverlayLayer.Geology))(GeologyLayer, { visibleMaps }),
+      //h.if(overlays.has(OverlayLayer.Rover))(RoverPosition),
     ]),
   ]);
 };
 
 export {
-  CRISMLayer,
   CTXLayer,
   MOLALayer,
   HiRISELayer,
