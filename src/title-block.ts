@@ -124,6 +124,11 @@ const SoftwareInfo = () => {
       h("a", { href: GITHUB_REV_LINK }, GIT_COMMIT_HASH),
       ")",
     ]),
+    h("p.description", [
+      "The Mars lab software stack is a set of application components and image-processing utilities that ",
+      "support centralized management of Mars datasets for scientific analysis. ",
+      h(NavLink, { to: "/about" }, ["Learn more →"]),
+    ]),
     h("p.directions", "Drag the 3D display to pan, Ctrl+drag to rotate."),
     h(MiniControls),
   ]);
@@ -135,7 +140,6 @@ const Navbar = () => {
     null,
     h("ul", [
       h(Link, { to: "/", exact: true }, h(Icon, { icon: "home" })),
-      //h(Link, { to: "/about" }, "The viewer"),
       h(Link, { to: "/layers" }, h(Icon, { icon: "layers" })),
       h(Link, { to: "/settings" }, h(Icon, { icon: "settings" })),
       h(
@@ -148,20 +152,7 @@ const Navbar = () => {
 };
 
 const TitleBlock = () => {
-  return h("div.title-block", [
-    h("h1.title", ["Mars Lab"]),
-    h("div.auth-affil", [
-      h("h3.author", null),
-      h("h4.affiliation", [
-        h("a", { href: "https://davenquinn.com" }, "Daven Quinn"),
-        ", ",
-        "UW – Madison, ",
-        h("a", { href: "https://macrostrat.org" }, "Macrostrat"),
-      ]),
-    ]),
-    h(SoftwareInfo),
-    h(Navbar),
-  ]);
+  return h("div.title-block", [h("h1.title", ["Mars Lab"]), h(Navbar)]);
 };
 
-export { TitleBlock, Link, Control };
+export { TitleBlock, Link, Control, SoftwareInfo };

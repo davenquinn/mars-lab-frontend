@@ -17,8 +17,8 @@ link_button()
   font-weight 300
   display block
   color var(--accent-dark)
-  padding 0.2em 0.5em
-  margin-right 0.5em
+  padding 0.1em 0.25em
+  margin-right 0.25em
   border-radius 3px
   cursor pointer
   &:hover
@@ -140,6 +140,7 @@ link_button()
   width: 100vw
   overflow-x: hidden;
   height 100vh
+  overflow-y: hidden
 
 .right
   flex-grow 1
@@ -155,13 +156,17 @@ link_button()
   left 0em
   bottom 0
   display flex
+  height 100vh
   .left-panel
     overflow-y scroll
     overflow-x hidden
-    margin: 1em
-    position relative
     background: white
     border-radius: 6px
+    max-height: 100%
+  .left-stack
+    position relative
+    max-height 100%
+    margin: 1em 1em 2em
   .spacer
     flex-grow 1
   .content, .modal-content
@@ -192,8 +197,9 @@ nav
     flex-direction row
     align-items space-between
     padding-left: 0
-    margin-right: -0.5em
-    justify-content: baseline
+    margin-left 2em
+    margin-right: -0.25em
+    justify-content: center
   li
     vertical-align: baseline
     a
@@ -207,7 +213,16 @@ nav
   &.is-active
     background-color #eee
 
+.description
+  line-height 1.2
+  font-weight 300
+  color #888
+
 .title-block
+  display flex
+  flex-direction row
+  align-items baseline
+  justify-content: space-between
   h1,h2,h3,h4
     margin-bottom 0.2em
     margin-top 0
@@ -221,26 +236,20 @@ nav
     padding-top 0
     font-weight 300
     color #888
-  .auth-affil
-    //display flex
-    //flex-direction: row
-    //justify-content baseline
-    //align-items: space-between
-    font-weight 500
-    color #888
-    margin-top 0.5em
-    .author
-      min-width 40%
-      margin-right 1em
-      font-weight 600
-      font-style italic
-    .affiliation
-      font-size 0.9em
-    &>*
-      a
-        color: inherit
-        &:visited
-          color: inherit
+.auth-affil
+  //display flex
+  //flex-direction: row
+  //justify-content baseline
+  //align-items: space-between
+  font-weight 300
+  color #888
+  .author
+    min-width 40%
+    margin-right 1em
+    font-weight 600
+    font-style italic
+  .affiliation
+    font-size 0.9em
 .software-info, .page-controls
   color #888
   font-weight 300

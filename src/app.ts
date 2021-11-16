@@ -9,7 +9,7 @@ import { SelectedPoint } from "cesium-viewer/position";
 import styles from "./main.styl";
 
 import { LayerSelectorPanel } from "./layer-selector";
-import { TitleBlock } from "./title-block";
+import { TitleBlock, SoftwareInfo } from "./title-block";
 import { TextPanel } from "./text-panel";
 import { PositionListEditor, CopyPositionButton } from "./editor";
 import positions from "./positions.js";
@@ -55,6 +55,21 @@ const MemViewer = memo(Viewer);
 
 const baseURL = process.env.PUBLIC_URL ?? "/";
 
+function SettingsPanel() {
+  return h("div.settings", [
+    h(SoftwareInfo),
+    h("div.auth-affil", [
+      h("p.affiliation", [
+        "Created by ",
+        h("a", { href: "https://davenquinn.com" }, "Daven Quinn"),
+        ", ",
+        "UW – Madison, ",
+        h("a", { href: "https://macrostrat.org" }, "Macrostrat"),
+      ]),
+    ]),
+  ]);
+}
+
 const MainUI = ({ scrollParentRef }) => {
   const selectedLocation = useSelector((s) => s.selectedLocation);
   if (selectedLocation != null) {
@@ -64,12 +79,13 @@ const MainUI = ({ scrollParentRef }) => {
   return h("div.content", [
     h(TitleBlock),
     h(Switch, [
-      // h(Route, { path: "/changelog" }, [
-      //   h(TextPanel, { html: changelogText, scrollParentRef }),
-      // ]),
-      // h(Route, { path: "/about" }, [
-      //   h(TextPanel, { html: viewerText, scrollParentRef }),
-      // ]),
+      h(Route, { path: "/changelog" }, [
+        h(TextPanel, { html: changelogText, scrollParentRef }),
+      ]),
+      h(Route, { path: "/about" }, [
+        h(TextPanel, { html: viewerText, scrollParentRef }),
+      ]),
+      h(Route, { path: "/settings" }, h(SettingsPanel)),
       h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
       h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
       h(Route, { path: "/" }, null),
@@ -81,7 +97,9 @@ const UI = () => {
   const ref = useRef();
 
   return h(Router, { basename: baseURL }, [
-    h("div.left-panel", { ref }, h(MainUI, { scrollParentRef: ref })),
+    h("div.left-stack", [
+      h("div.left-panel", { ref }, h(MainUI, { scrollParentRef: ref })),
+    ]),
     h("div.spacer"),
   ]);
 };
