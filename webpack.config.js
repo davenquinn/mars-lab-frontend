@@ -24,13 +24,6 @@ const cesiumBase = (process.env.PUBLIC_URL || "") + "/";
 
 //uglify = new UglifyJsPlugin()
 
-let babelLoader = {
-  loader: "babel-loader",
-  options: {
-    sourceMap: mode == "development",
-  },
-};
-
 const cssModuleLoader = {
   loader: "css-loader",
   options: {
@@ -46,18 +39,18 @@ let exclude = /node_modules/;
 module.exports = {
   mode: mode,
   devServer: {
-    contentBase: outputDir,
     compress: true,
     port: 3000,
     hot: true,
     open: true,
   },
+  devtool: "source-map",
   module: {
     unknownContextCritical: false,
     rules: [
       {
         test: /\.(js|jsx|ts|tsx)$/,
-        use: [babelLoader],
+        use: ["babel-loader"],
         exclude,
       },
       {
@@ -109,12 +102,11 @@ module.exports = {
       ),
       "~": path.resolve(__dirname, "src"),
     },
+    // Fallback to buffer
+    fallback: { buffer: false },
   },
   entry: {
     index: "./src/index.ts",
-  },
-  node: {
-    fs: "empty",
   },
   output: {
     path: outputDir,
@@ -126,11 +118,13 @@ module.exports = {
     toUrlUndefined: true,
   },
   plugins: [
-    new CopyPlugin([
-      { from: path.join(cesiumSource, cesiumWorkers), to: "Workers" },
-      { from: path.join(cesiumSource, "Assets"), to: "Assets" },
-      { from: path.join(cesiumSource, "Widgets"), to: "Widgets" },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        { from: path.join(cesiumSource, cesiumWorkers), to: "Workers" },
+        { from: path.join(cesiumSource, "Assets"), to: "Assets" },
+        { from: path.join(cesiumSource, "Widgets"), to: "Widgets" },
+      ],
+    }),
     new HtmlWebpackPlugin({ title: "Mars Lab" }),
     new DefinePlugin({
       GITHUB_LINK: JSON.stringify(GITHUB_LINK),
@@ -148,6 +142,7 @@ module.exports = {
     new EnvironmentPlugin({
       API_BASE_URL: "http://localhost:8080",
       PUBLIC_URL: "/",
+      MAPBOX_API_TOKEN: "",
     }),
   ],
 };
