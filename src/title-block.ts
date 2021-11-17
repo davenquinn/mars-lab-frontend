@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { DisplayQuality } from "cesium-viewer";
 import { MapBackend } from "./state";
-import { Icon } from "@blueprintjs/core";
+import { Icon, Button } from "@blueprintjs/core";
 
 const h = hyperStyled(styles);
 
@@ -114,6 +114,11 @@ const MiniControls = () => {
   ]);
 };
 
+function IconLink(props) {
+  const { icon, to, ...rest } = props;
+  return h(Link, { to, ...rest }, h(Icon, { icon }));
+}
+
 const SoftwareInfo = () => {
   return h("div.software-info", [
     h("p.version", [
@@ -139,20 +144,36 @@ const Navbar = () => {
     "nav",
     null,
     h("ul", [
-      h(Link, { to: "/", exact: true }, h(Icon, { icon: "home" })),
-      h(Link, { to: "/layers" }, h(Icon, { icon: "layers" })),
-      h(Link, { to: "/settings" }, h(Icon, { icon: "settings" })),
-      h(
-        Link,
-        { to: "/list", className: styles["positions"] },
-        h(Icon, { icon: "map-marker" })
-      ),
+      h(IconLink, { to: "/layers", icon: "layers" }),
+      h(IconLink, {
+        to: "/list",
+        className: styles["positions"],
+        icon: "map-marker",
+      }),
     ])
   );
 };
 
 const TitleBlock = () => {
-  return h("div.title-block", [h("h1.title", ["Mars Lab"]), h(Navbar)]);
+  const uiExpanded = useSelector((s) => s.uiExpanded);
+  const dispatch = useDispatch();
+  return h("div.title-block", [
+    h(Icon, {
+      className: "ui-button",
+      icon: uiExpanded ? "collapse-all" : "expand-all",
+      onClick: () => dispatch({ type: "expand-ui", value: !uiExpanded }),
+    }),
+    h(
+      NavLink,
+      {
+        to: "/",
+        exact: true,
+      },
+      h("h1.title", ["Mars Lab"])
+    ),
+    h("div.spacer"),
+    h.if(uiExpanded)(Navbar),
+  ]);
 };
 
 export { TitleBlock, Link, Control, SoftwareInfo };

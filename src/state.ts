@@ -41,6 +41,7 @@ interface MapFeature {
 type AppState = GlobeState & {
   overlayLayers: Set<OverlayLayer>;
   debug: boolean;
+  uiExpanded: boolean;
   mapBackend: MapBackend;
   moveOnScroll: boolean;
   selectedFeatures: MapFeature[];
@@ -66,6 +67,8 @@ type ToggleMoveOnScroll = {
 type MapClicked = { type: "map-clicked"; position: GeographicLocation };
 type DismissSelectionPanel = { type: "dismiss-selection-panel" };
 
+type ExpandUI = { type: "expand-ui"; value: boolean };
+
 type AppAction =
   | GlobeAction
   | ToggleOverlay
@@ -74,7 +77,8 @@ type AppAction =
   | ToggleDebugger
   | ToggleMoveOnScroll
   | MapClicked
-  | DismissSelectionPanel;
+  | DismissSelectionPanel
+  | ExpandUI;
 
 interface PositionHashParams {
   x: string;
@@ -209,6 +213,8 @@ const newReducer = (state: AppState, action: AppAction) => {
       return { ...state, mapBackend };
     case "map-clicked":
       return { ...state, selectedLocation: action.position };
+    case "expand-ui":
+      return { ...state, uiExpanded: action.value };
     default:
       return reducer(state, action);
   }
@@ -243,6 +249,7 @@ const initialState: AppState = {
   moveOnScroll: true,
   selectedLocation: null,
   visibleMaps: null,
+  uiExpanded: true,
   selectedFeatures: [],
   overlayLayers: new Set(
     (Array.isArray(overlays) ? overlays : [overlays]) ?? []

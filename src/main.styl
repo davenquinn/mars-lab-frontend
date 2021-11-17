@@ -97,6 +97,9 @@ link_button()
     font-weight bold
     color: var(--accent-color)
 
+  .ui-button
+    margin-right: 0.6em 
+
   .distance-legend
     background: transparent !important
     border: none !important
@@ -163,15 +166,18 @@ link_button()
     background: white
     border-radius: 6px
     max-height: 100%
+    transition: height 0.5s ease-in-out
   .left-stack
     position relative
     max-height 100%
     margin: 1em 1em 2em
+    transition: width 0.5s ease-in-out
   .spacer
     flex-grow 1
   .content, .modal-content
     width 100%
     padding 1em
+    padding-top 0.5em
     padding-bottom 0
   min-width 25em
   max-width 20%
@@ -198,6 +204,7 @@ nav
     align-items space-between
     padding-left: 0
     margin-left 2em
+    margin 0
     margin-right: -0.25em
     justify-content: center
   li
@@ -223,15 +230,18 @@ nav
   flex-direction row
   align-items baseline
   justify-content: space-between
+  margin-left -0.25em
   h1,h2,h3,h4
     margin-bottom 0.2em
     margin-top 0
     padding-bottom 0
-    font-weight: 600
+    font-weight: 500
     line-height: 1.0
   .title
-    font-size 1.8rem
-    font-weight 700
+    font-size 1.4rem
+    font-weight 500
+  a
+    text-decoration: none
   .subtitle
     padding-top 0
     font-weight 300

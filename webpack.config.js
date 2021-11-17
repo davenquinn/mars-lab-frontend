@@ -131,7 +131,7 @@ module.exports = {
       { from: path.join(cesiumSource, "Assets"), to: "Assets" },
       { from: path.join(cesiumSource, "Widgets"), to: "Widgets" },
     ]),
-    new HtmlWebpackPlugin({ title: "Syrtis – Jezero explorer" }),
+    new HtmlWebpackPlugin({ title: "Mars Lab" }),
     new DefinePlugin({
       GITHUB_LINK: JSON.stringify(GITHUB_LINK),
       CESIUM_BASE_URL: JSON.stringify(cesiumBase),

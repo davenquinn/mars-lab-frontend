@@ -72,23 +72,23 @@ function SettingsPanel() {
 
 const MainUI = ({ scrollParentRef }) => {
   const selectedLocation = useSelector((s) => s.selectedLocation);
+  const uiExpanded = useSelector((s) => s.uiExpanded);
   if (selectedLocation != null) {
     return h(SelectedLocation, { point: selectedLocation });
   }
 
   return h("div.content", [
     h(TitleBlock),
-    h(Switch, [
+    h.if(uiExpanded)(Switch, [
       h(Route, { path: "/changelog" }, [
         h(TextPanel, { html: changelogText, scrollParentRef }),
       ]),
       h(Route, { path: "/about" }, [
         h(TextPanel, { html: viewerText, scrollParentRef }),
       ]),
-      h(Route, { path: "/settings" }, h(SettingsPanel)),
+      h(Route, { path: "/", exact: true }, h(SettingsPanel)),
       h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
       h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
-      h(Route, { path: "/" }, null),
     ]),
   ]);
 };
