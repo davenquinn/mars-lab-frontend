@@ -46,8 +46,8 @@
   "dependencies": {
     "@macrostrat/cesium-martini": "file:./packages/cesium-martini",
     "@macrostrat/cesium-viewer": "file:./packages/cesium-viewer",
-    "@macrostrat/hyper": "^1.2.6",
-    "@macrostrat/ui-components": "^0.4.6",
+    "@macrostrat/hyper": "^1.4.2",
+    "@macrostrat/ui-components": "^1.0.2",
     "@mapbox/sphericalmercator": "^1.1.0",
     "@open-wc/webpack-import-meta-loader": "^0.4.7",
     "@types/underscore": "^1.10.24",

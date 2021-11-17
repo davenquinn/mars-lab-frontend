@@ -77,7 +77,9 @@ const MainUI = ({ scrollParentRef }) => {
     return h(SelectedLocation, { point: selectedLocation });
   }
 
-  return h("div.content", [
+  const style = {};
+
+  return h("div.content", { style }, [
     h(TitleBlock),
     h.if(uiExpanded)(Switch, [
       h(Route, { path: "/changelog" }, [

@@ -1,6 +1,5 @@
 const path = require("path");
 const { DefinePlugin, EnvironmentPlugin } = require("webpack");
-const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 //UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const historyApiFallback = require("connect-history-api-fallback");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -18,11 +17,6 @@ const gitRevisionPlugin = new GitRevisionPlugin({
   commithashCommand: "rev-parse --short HEAD",
 });
 const GITHUB_LINK = "https://github.com/davenquinn/ne-syrtis-jezero-viewer";
-
-let browserSync = new BrowserSyncPlugin({
-  server: { baseDir: "./dist" },
-  middleware: [historyApiFallback()],
-});
 
 const cesiumSource = "node_modules/cesium/Source";
 const cesiumWorkers = "../Build/Cesium/Workers";
@@ -51,6 +45,13 @@ let exclude = /node_modules/;
 
 module.exports = {
   mode: mode,
+  devServer: {
+    contentBase: outputDir,
+    compress: true,
+    port: 3000,
+    hot: true,
+    open: true,
+  },
   module: {
     unknownContextCritical: false,
     rules: [
@@ -125,7 +126,6 @@ module.exports = {
     toUrlUndefined: true,
   },
   plugins: [
-    browserSync,
     new CopyPlugin([
       { from: path.join(cesiumSource, cesiumWorkers), to: "Workers" },
       { from: path.join(cesiumSource, "Assets"), to: "Assets" },
