@@ -21,9 +21,7 @@ const Cesium: any = require("cesiumSource/Cesium");
 import { ImageryLayerCollection } from "resium";
 import { OverlayLayer } from "../state";
 import { ActiveMapLayer } from "cesium-viewer/actions";
-import { RoverPosition } from "../rover-position";
 import { useSelector } from "react-redux";
-import { GeologyLayer } from "./geology";
 
 const MARS_RADIUS_SCALAR = 3390 / 6371;
 

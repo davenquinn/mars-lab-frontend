@@ -1,8 +1,9 @@
 import { hyperStyled } from "@macrostrat/hyper";
-import { APIProvider } from "@macrostrat/ui-components";
-import { useRef, useState, memo } from "react";
+import { APIProvider, useElementSize } from "@macrostrat/ui-components";
+import { useRef, useState, memo, useEffect } from "react";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import { MarsTerrainProvider, ImageryLayers } from "./layers";
+import useDimensions from "use-element-dimensions";
 
 import CesiumViewer from "cesium-viewer";
 import { SelectedPoint } from "cesium-viewer/position";
@@ -14,7 +15,6 @@ import { TextPanel } from "./text-panel";
 import { PositionListEditor, CopyPositionButton } from "./editor";
 import positions from "./positions.js";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import mainText from "../text/output/main.html";
 import viewerText from "../text/output/viewer.html";
 import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
@@ -70,16 +70,20 @@ function SettingsPanel() {
   ]);
 }
 
-const MainUI = ({ scrollParentRef }) => {
+const MainUI = ({ scrollParentRef, onContentResize = null }) => {
+  const [size, ref] = useDimensions();
+  useEffect(() => {
+    if (size == null) return;
+    onContentResize?.(size);
+  }, [size]);
+
   const selectedLocation = useSelector((s) => s.selectedLocation);
   const uiExpanded = useSelector((s) => s.uiExpanded);
   if (selectedLocation != null) {
     return h(SelectedLocation, { point: selectedLocation });
   }
 
-  const style = {};
-
-  return h("div.content", { style }, [
+  return h("div.content", { ref }, [
     h(TitleBlock),
     h.if(uiExpanded)(Switch, [
       h(Route, { path: "/changelog" }, [
@@ -97,10 +101,20 @@ const MainUI = ({ scrollParentRef }) => {
 
 const UI = () => {
   const ref = useRef();
+  const [{ width, height }, setSize] = useState({ width: null, height: null });
 
   return h(Router, { basename: baseURL }, [
     h("div.left-stack", [
-      h("div.left-panel", { ref }, h(MainUI, { scrollParentRef: ref })),
+      h(
+        "div.left-panel",
+        { ref, style: { height, width } },
+        h(MainUI, {
+          scrollParentRef: ref,
+          onContentResize({ width, height }) {
+            setSize({ width, height });
+          },
+        })
+      ),
     ]),
     h("div.spacer"),
   ]);
