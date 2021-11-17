@@ -70,7 +70,7 @@ function SettingsPanel() {
   ]);
 }
 
-const MainUI = ({ scrollParentRef, onContentResize = null }) => {
+const MainUI = ({ scrollParentRef, onContentResize = null, expanded }) => {
   const [size, ref] = useDimensions();
   useEffect(() => {
     if (size == null) return;
@@ -78,14 +78,13 @@ const MainUI = ({ scrollParentRef, onContentResize = null }) => {
   }, [size]);
 
   const selectedLocation = useSelector((s) => s.selectedLocation);
-  const uiExpanded = useSelector((s) => s.uiExpanded);
   if (selectedLocation != null) {
     return h(SelectedLocation, { point: selectedLocation });
   }
 
   return h("div.content", { ref }, [
     h(TitleBlock),
-    h.if(uiExpanded)(Switch, [
+    h.if(expanded)(Switch, [
       h(Route, { path: "/changelog" }, [
         h(TextPanel, { html: changelogText, scrollParentRef }),
       ]),
@@ -100,6 +99,7 @@ const MainUI = ({ scrollParentRef, onContentResize = null }) => {
 };
 
 const UI = () => {
+  const expanded = useSelector((s) => s.uiExpanded);
   const ref = useRef();
   const [{ width, height }, setSize] = useState({ width: null, height: null });
 
@@ -107,12 +107,17 @@ const UI = () => {
     h("div.left-stack", [
       h(
         "div.left-panel",
-        { ref, style: { height, width } },
+        {
+          ref,
+          style: { height, width },
+          className: expanded ? "expanded" : "",
+        },
         h(MainUI, {
           scrollParentRef: ref,
           onContentResize({ width, height }) {
             setSize({ width, height });
           },
+          expanded,
         })
       ),
     ]),

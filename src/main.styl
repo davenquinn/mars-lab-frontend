@@ -160,27 +160,35 @@ link_button()
   bottom 0
   display flex
   height 100vh
+  pointer-events: none
   .left-panel
+    pointer-events: all
     overflow-y scroll
     overflow-x scroll
     background: white
     border-radius: 6px
     max-height: 100%
     transition: width 0.1s ease-in-out, height 0.3s ease-in-out
+    &.expanded
+      transform: translateY(-0.5em)
+
   .left-stack
     position relative
     max-height 100%
-    margin: 1em 1em 2em
+    margin: 1.5em 1em
   .spacer
     flex-grow 1
   .content, .modal-content
-    min-width: 10em
     padding 0.5em 1em
-    margin-bottom -0.5em
+    margin-bottom -0.7em
     width: fit-content
     p
       min-width: 20em
   position relative
+
+.expanded
+  .content, .modal-content
+    padding 1em
 
 @media screen and (max-width 600px)
   .app-ui
@@ -230,8 +238,9 @@ nav
   align-items baseline
   justify-content: space-between
   margin-left -0.25em
+  line-height 1
   h1,h2,h3,h4
-    margin-bottom 0.2em
+    margin-bottom 0
     margin-top 0
     padding-bottom 0
     font-weight: 500
