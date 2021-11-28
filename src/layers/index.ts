@@ -71,17 +71,21 @@ function BaseImageryLayer(
 
 const HiRISELayer = (props: GeoLayerProps) => {
   return h(BaseImageryLayer, {
-    url: `http://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`,
+    url: `https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}@2x.png`,
     credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
+    tileWidth: 256,
+    tileHeight: 256,
   });
 };
 
 const OrthoLayer = (props: GeoLayerProps) => {
   return h(BaseImageryLayer, {
-    url: `http://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,255`,
+    url: `https://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,255`,
     credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
+    tileWidth: 256,
+    tileHeight: 256,
   });
 };
 
@@ -138,14 +142,14 @@ class MarsTerrainProvider extends MapboxTerrainProvider {
   buildTileURL(tileCoords: TileCoordinates) {
     const { z, x, y } = tileCoords;
     const hires = this.highResolution ? "@2x" : "";
-    return `http://argyre.geoscience.wisc.edu/tiles/elevation-mosaic/tiles/${z}/${x}/${y}${hires}.png?resampling_method=bilinear`;
+    return `https://argyre.geoscience.wisc.edu/tiles/elevation-mosaic/tiles/${z}/${x}/${y}${hires}.png?resampling_method=bilinear`;
   }
 
   getTileDataAvailable(x, y, z) {
     // const [w, s, e, n] = merc.bbox(x, y, z);
     // if (e < bounds.w || w > bounds.e || n < bounds.s || s > bounds.n)
     //   return false;
-    return z <= 15;
+    return true;
   }
 }
 
