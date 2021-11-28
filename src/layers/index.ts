@@ -71,7 +71,7 @@ function BaseImageryLayer(
 
 const HiRISELayer = (props: GeoLayerProps) => {
   return h(BaseImageryLayer, {
-    url: `https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}@2x.png`,
+    url: `https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`,
     credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
     tileWidth: 256,
