@@ -9,7 +9,7 @@ import CesiumViewer from "cesium-viewer";
 import { SelectedPoint } from "cesium-viewer/position";
 import styles from "./main.styl";
 
-import { LayerSelectorPanel } from "./layer-selector";
+import { LayerSelectorPanel } from "./layers/layer-selector";
 import { TitleBlock, SoftwareInfo } from "./title-block";
 import { TextPanel } from "./text-panel";
 import { PositionListEditor, CopyPositionButton } from "./editor";
@@ -20,6 +20,7 @@ import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
 import { MapBackend, store } from "./state";
 import { SelectedLocation } from "./selected-location";
+import classNames from "classnames";
 
 const h = hyperStyled(styles);
 
@@ -82,18 +83,22 @@ const MainUI = ({ scrollParentRef, onContentResize = null, expanded }) => {
     return h(SelectedLocation, { point: selectedLocation });
   }
 
-  return h("div.content", { ref }, [
-    h(TitleBlock),
-    h.if(expanded)(Switch, [
-      h(Route, { path: "/changelog" }, [
-        h(TextPanel, { html: changelogText, scrollParentRef }),
+  return h("div.panel-content", { ref }, [
+    h("div.scroll-pane", [
+      h(TitleBlock),
+      h("div.panel-body", [
+        h(Switch, [
+          h(Route, { path: "/changelog" }, [
+            h(TextPanel, { html: changelogText, scrollParentRef }),
+          ]),
+          h(Route, { path: "/about" }, [
+            h(TextPanel, { html: viewerText, scrollParentRef }),
+          ]),
+          h(Route, { path: "/", exact: true }, h(SettingsPanel)),
+          h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
+          h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
+        ]),
       ]),
-      h(Route, { path: "/about" }, [
-        h(TextPanel, { html: viewerText, scrollParentRef }),
-      ]),
-      h(Route, { path: "/", exact: true }, h(SettingsPanel)),
-      h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
-      h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
     ]),
   ]);
 };

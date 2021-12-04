@@ -1,10 +1,8 @@
 import h from "@macrostrat/hyper";
 import { useSelector, useDispatch } from "react-redux";
-import { useCallback } from "react";
 import classNames from "classnames";
 import { ActiveMapLayer } from "cesium-viewer/actions";
-import { OverlayLayer } from "./state";
-import update from "immutability-helper";
+import { OverlayLayer } from "../state";
 
 const LayerButton = (props) => {
   const { name, active, ...rest } = props;
@@ -43,6 +41,10 @@ function BaseLayerSelector() {
       layer: ActiveMapLayer.Hillshade,
     }),
     h(BaseLayerButton, {
+      name: "Viking MDIM",
+      layer: ActiveMapLayer.VikingMDIM,
+    }),
+    h(BaseLayerButton, {
       name: "OpenPlanetary hillshade",
       layer: ActiveMapLayer.OpenPlanetaryHillshade,
     }),
@@ -78,6 +80,16 @@ export function LayerSelectorPanel() {
       name: "Orthoimagery",
       layer: OverlayLayer.Ortho,
       description: "Orthoimagery for elevation models",
+    }),
+    h(LayerToggle, {
+      name: "Global uncontrolled HiRISE",
+      layer: OverlayLayer.ArcHiRISE,
+      description: "Global HiRISE images",
+    }),
+    h(LayerToggle, {
+      name: "Global orthoimagery",
+      layer: OverlayLayer.ArcOrtho,
+      description: "Global orthimagery",
     }),
     //h(LayerToggle, { name: "Rover position", layer: OverlayLayer.Rover }),
     h("h3", "Base layers"),

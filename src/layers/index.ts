@@ -1,11 +1,5 @@
 import { useRef } from "react";
-import {
-  Credit,
-  WebMapTileServiceImageryProvider,
-  UrlTemplateImageryProvider,
-  TileMapServiceImageryProvider,
-  ArcGisMapServerImageryProvider,
-} from "cesium";
+import { Credit, TileMapServiceImageryProvider } from "cesium";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
 import {
@@ -18,54 +12,42 @@ import MapboxTerrainProvider, {
 } from "@macrostrat/cesium-martini";
 import SphericalMercator from "@mapbox/sphericalmercator";
 const Cesium: any = require("cesiumSource/Cesium");
-import { ImageryLayerCollection } from "resium";
-import { OverlayLayer } from "../state";
+import { ImageryLayerCollection, GeoJsonDataSource } from "resium";
 import { ActiveMapLayer } from "cesium-viewer/actions";
 import { useSelector } from "react-redux";
+import { ArcGISAstroImageryProvider, BaseImageryLayer } from "./base";
+
+export enum OverlayLayer {
+  HiRISE = "hirise",
+  Ortho = "ortho",
+  ArcHiRISE = "arc-hirise",
+  ArcOrtho = "arc-ortho",
+  CRISM = "crism",
+  Geology = "geology",
+  Rover = "rover",
+}
 
 const MARS_RADIUS_SCALAR = 3390 / 6371;
 
-const CTXLayer = (props: GeoLayerProps) => {
-  let ctx = useRef(
-    new UrlTemplateImageryProvider({
-      url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer/tile/{z}/{y}/{x}?blankTile=false",
-      style: "default",
-      format: "image/png",
-      tileWidth: 512,
-      tileHeight: 512,
-      maximumLevel: 14,
-      layer: "",
-      tileMatrixSetID: "",
-      tilingScheme: new Cesium.GeographicTilingScheme(),
-      credit: new Credit("Murray Lab / CTX / ArcGIS"),
-    })
-  );
+// These mosaics are static, ours are dynamic.
+function ArcMDIMLayer(props: GeoLayerProps) {
+  return h(ArcGISAstroImageryProvider, {
+    layerID: "MDIM",
+    credit: "USGS / ESRI",
+  });
+}
 
-  return h(ImageryLayer, { imageryProvider: ctx.current, ...props });
-};
+function ArcCTXLayer(props: GeoLayerProps) {
+  return h(ArcGISAstroImageryProvider, {
+    layerID: "CTX",
+    credit: "Murray Lab / CTX / ESRI",
+  });
+}
 
-function BaseImageryLayer(
-  props: GeoLayerProps & { url: string; credit: string }
-) {
-  const { url, credit, ...rest } = props;
-  let _credit: any = null;
-  if (credit != null) {
-    _credit = new Credit(credit);
-  }
-  let ctx = useRef(
-    new WebMapTileServiceImageryProvider({
-      url,
-      style: "default",
-      format: "image/png",
-      maximumLevel: 18,
-      layer: "",
-      tileMatrixSetID: "",
-      credit: _credit,
-    })
-  );
-  return h(ImageryLayer, {
-    imageryProvider: ctx.current,
-    ...rest,
+function ArcHiRISELayer(props: GeoLayerProps) {
+  return h(ArcGISAstroImageryProvider, {
+    layerID: "HiRISE",
+    credit: "Murray Lab / CTX / ESRI",
   });
 }
 
@@ -176,22 +158,35 @@ const ImageryLayers = () => {
   const visibleMaps = useSelector((s) => s.visibleMaps);
   return h([
     h(ImageryLayerCollection, null, [
+      h(GeoJsonDataSource, {
+        data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/assets",
+        markerColor: Cesium.Color.RED,
+        stroke: Cesium.Color.RED,
+        clampToGround: true,
+      }),
+      h(GeoJsonDataSource, {
+        data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/orthophoto/assets",
+        markerColor: Cesium.Color.GREEN,
+        stroke: Cesium.Color.GREEN,
+        clampToGround: true,
+      }),
+    ]),
+    h(ImageryLayerCollection, null, [
       h.if(mapLayer == ActiveMapLayer.OpenPlanetaryHillshade)(MOLALayer),
-      h.if(mapLayer == ActiveMapLayer.CTX)(CTXLayer),
+      h.if(mapLayer == ActiveMapLayer.CTX)(ArcCTXLayer),
+      h.if(mapLayer == ActiveMapLayer.ArcMDIM)(ArcMDIMLayer),
       h.if(mapLayer == ActiveMapLayer.Hillshade)(MarsHillshadeLayer),
     ]),
     h(ImageryLayerCollection, null, [
       h.if(overlays.has(OverlayLayer.HiRISE))(HiRISELayer),
       h.if(overlays.has(OverlayLayer.Ortho))(OrthoLayer),
-      //h.if(overlays.has(OverlayLayer.CRISM))(CRISMLayer),
-      //h.if(overlays.has(OverlayLayer.Geology))(GeologyLayer, { visibleMaps }),
-      //h.if(overlays.has(OverlayLayer.Rover))(RoverPosition),
+      h.if(overlays.has(OverlayLayer.ArcHiRISE))(ArcHiRISELayer),
     ]),
   ]);
 };
 
 export {
-  CTXLayer,
+  ArcCTXLayer,
   MOLALayer,
   HiRISELayer,
   MarsHillshadeLayer,

@@ -17,18 +17,11 @@ import {
   getHashString,
   setHashString,
 } from "@macrostrat/ui-components/lib/esm/util/query-string";
+import { OverlayLayer } from "./layers";
 
 enum MapBackend {
   Flat,
   Globe,
-}
-
-enum OverlayLayer {
-  HiRISE = "hirise",
-  Ortho = "ortho",
-  CRISM = "crism",
-  Geology = "geology",
-  Rover = "rover",
 }
 
 interface MapFeature {

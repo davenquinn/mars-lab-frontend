@@ -11,6 +11,7 @@ $main=rgb(250, 128, 114)
   --accent-background-light: lighten($main, 25)
   --main-font: "Source Serif Pro", "Times New Roman", serif
   --mono-font: "Source Code Pro", mono
+  --main-padding: 1rem
 
 link_button()
   text-decoration none
@@ -28,10 +29,45 @@ link_button()
   &.is-active
     background-color var(--accent-background)
 
+.left-panel
+  position relative
+  min-width: 15em
+
+.panel-content
+  display flex
+  flex-direction: column
+  overflow hidden
+
+.title-block, .panel-body
+  padding-left var(--main-padding)
+  padding-right var(--main-padding)
+
+.title-block
+  padding var(--main-padding)
+
+.left-panel
+  transition: width 0.1s ease-in-out, height 0.3s ease-in-out
+
+.panel-body
+  display none
+  overflow-y scroll
+  flex 1
+
+.expanded
+  .title-block
+    padding-bottom 0.5em
+    border-bottom 1px solid var(--accent-background)
+  .panel-body
+    display: block
+    overflow-y scroll
+
 :global
   *
     font-family: var(--main-font)
     box-sizing: border-box;
+
+  h3
+    margin 0.75em 0 0.5em
 
   body
     margin 0
@@ -163,14 +199,10 @@ link_button()
   pointer-events: none
   .left-panel
     pointer-events: all
-    overflow-y scroll
-    overflow-x scroll
+    overflow-y hidden
     background: white
     border-radius: 6px
     max-height: 100%
-    transition: width 0.1s ease-in-out, height 0.3s ease-in-out
-    &.expanded
-      transform: translateY(-0.5em)
 
   .left-stack
     position relative
@@ -178,17 +210,13 @@ link_button()
     margin: 1.5em 1em
   .spacer
     flex-grow 1
-  .content, .modal-content
-    padding 0.5em 1em
+  .panel-content, .modal-content
     margin-bottom -0.7em
     width: fit-content
     p
       min-width: 20em
   position relative
 
-.expanded
-  .content, .modal-content
-    padding 1em
 
 @media screen and (max-width 600px)
   .app-ui
@@ -239,7 +267,6 @@ nav
   justify-content: space-between
   margin-left -0.25em
   line-height 1
-  width: fit-content
   h1,h2,h3,h4
     margin-bottom 0
     margin-top 0
