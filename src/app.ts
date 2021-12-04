@@ -84,8 +84,8 @@ const MainUI = ({ scrollParentRef, onContentResize = null, expanded }) => {
   }
 
   return h("div.panel-content", { ref }, [
-    h("div.scroll-pane", [
-      h(TitleBlock),
+    h(TitleBlock),
+    h("div.scroll-pane", null, [
       h("div.panel-body", [
         h(Switch, [
           h(Route, { path: "/changelog" }, [

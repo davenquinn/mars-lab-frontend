@@ -31,12 +31,23 @@ link_button()
 
 .left-panel
   position relative
-  min-width: 15em
+  max-height calc(100vh - 2em)
+  overflow-y scroll
+
+.expanded
+  .scroll-pane
+    overflow-y scroll
+    position relative
+    height 100%
+  .panel-content
+    min-width: 15em
+
 
 .panel-content
   display flex
   flex-direction: column
-  overflow hidden
+  width 100%
+  color lighten(black, 30%)
 
 .title-block, .panel-body
   padding-left var(--main-padding)
@@ -44,14 +55,32 @@ link_button()
 
 .title-block
   padding var(--main-padding)
+  padding-bottom calc(var(--main-padding) * 0.75)
+  position sticky
+  background lighten(red, 95%)
+  top 0
+  svg
+    fill darken($main, 20%)
+
+
+.expanded .title-block
+  margin-bottom 4px
+  border-bottom 1px solid #ccc
+  z-index 10
 
 .left-panel
-  transition: width 0.1s ease-in-out, height 0.3s ease-in-out
+  transition: width 0.3s ease-in-out, height 0.3s ease-in-out
+  //overscroll-behavior: none
+  animation: hide-scroll 0.3s backwards;
+
+@keyframes hide-scroll {
+  from, to { overflow: hidden; } 
+}
 
 .panel-body
   display none
-  overflow-y scroll
   flex 1
+  padding-bottom var(--main-padding)
 
 .expanded
   .title-block
@@ -59,7 +88,6 @@ link_button()
     border-bottom 1px solid var(--accent-background)
   .panel-body
     display: block
-    overflow-y scroll
 
 :global
   *
@@ -199,7 +227,6 @@ link_button()
   pointer-events: none
   .left-panel
     pointer-events: all
-    overflow-y hidden
     background: white
     border-radius: 6px
     max-height: 100%
@@ -211,7 +238,6 @@ link_button()
   .spacer
     flex-grow 1
   .panel-content, .modal-content
-    margin-bottom -0.7em
     width: fit-content
     p
       min-width: 20em

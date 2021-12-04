@@ -168,6 +168,7 @@ const TitleBlock = () => {
       {
         to: "/",
         exact: true,
+        onClick: () => dispatch({ type: "expand-ui", value: true }),
       },
       h("h1.title", ["Mars Lab"])
     ),
