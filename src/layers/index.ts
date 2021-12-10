@@ -16,16 +16,7 @@ import { ImageryLayerCollection, GeoJsonDataSource } from "resium";
 import { ActiveMapLayer } from "cesium-viewer/actions";
 import { useSelector } from "react-redux";
 import { ArcGISAstroImageryProvider, BaseImageryLayer } from "./base";
-
-export enum OverlayLayer {
-  HiRISE = "hirise",
-  Ortho = "ortho",
-  ArcHiRISE = "arc-hirise",
-  ArcOrtho = "arc-ortho",
-  CRISM = "crism",
-  Geology = "geology",
-  Rover = "rover",
-}
+import { VectorLayer, OverlayLayer } from "./base";
 
 const MARS_RADIUS_SCALAR = 3390 / 6371;
 
@@ -158,16 +149,20 @@ const ImageryLayers = () => {
   const visibleMaps = useSelector((s) => s.visibleMaps);
   return h([
     h(ImageryLayerCollection, null, [
-      h(GeoJsonDataSource, {
+      h.if(overlays.has(OverlayLayer.HiRISEFootprints))(GeoJsonDataSource, {
         data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/assets",
-        markerColor: Cesium.Color.RED,
+        //markerColor: Cesium.Color.RED,
         stroke: Cesium.Color.RED,
+        fill: Cesium.Color.RED.withAlpha(0.2),
+        strokeWidth: 3,
         clampToGround: true,
       }),
-      h(GeoJsonDataSource, {
-        data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/orthophoto/assets",
-        markerColor: Cesium.Color.GREEN,
+      h.if(overlays.has(OverlayLayer.OrthophotoFooprints))(GeoJsonDataSource, {
+        data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/assets",
+        //markerColor: Cesium.Color.GREEN,
         stroke: Cesium.Color.GREEN,
+        fill: Cesium.Color.GREEN.withAlpha(0.2),
+        strokeWidth: 3,
         clampToGround: true,
       }),
     ]),

@@ -54,3 +54,21 @@ export function BaseImageryLayer(
     ...rest,
   });
 }
+
+export enum RasterLayer {
+  HiRISE = "hirise",
+  Ortho = "ortho",
+  ArcHiRISE = "arc-hirise",
+  ArcOrtho = "arc-ortho",
+  CRISM = "crism",
+  Geology = "geology",
+  Rover = "rover",
+}
+
+export enum VectorLayer {
+  HiRISEFootprints = "hirise-footprints",
+  OrthophotoFooprints = "orthophotos",
+}
+
+export const OverlayLayer = { ...RasterLayer, ...VectorLayer };
+export type OverlayLayer = RasterLayer & VectorLayer;

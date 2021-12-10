@@ -1,5 +1,5 @@
 import { hyperStyled } from "@macrostrat/hyper";
-import { APIProvider, useElementSize } from "@macrostrat/ui-components";
+import { APIProvider } from "@macrostrat/ui-components";
 import { useRef, useState, memo, useEffect } from "react";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import { MarsTerrainProvider, ImageryLayers } from "./layers";
@@ -20,7 +20,6 @@ import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
 import { MapBackend, store } from "./state";
 import { SelectedLocation } from "./selected-location";
-import classNames from "classnames";
 
 const h = hyperStyled(styles);
 

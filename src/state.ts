@@ -17,7 +17,7 @@ import {
   getHashString,
   setHashString,
 } from "@macrostrat/ui-components/lib/esm/util/query-string";
-import { OverlayLayer } from "./layers";
+import { OverlayLayer } from "./layers/base";
 
 enum MapBackend {
   Flat,

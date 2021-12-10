@@ -2,7 +2,8 @@ import h from "@macrostrat/hyper";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 import { ActiveMapLayer } from "cesium-viewer/actions";
-import { OverlayLayer } from "../state";
+import { OverlayLayer } from "./base";
+import { Switch } from "@blueprintjs/core";
 
 const LayerButton = (props) => {
   const { name, active, ...rest } = props;
@@ -56,15 +57,24 @@ function useIsActive(lyr) {
   return overlays.has(lyr);
 }
 
-function LayerToggle({ name, layer, description }) {
+function LayerToggle({ name, layer, description, footprintsLayer }) {
   const dispatch = useDispatch();
-  return h(LayerButton, {
-    name,
-    active: useIsActive(layer),
-    onClick() {
-      dispatch({ type: "toggle-overlay", value: layer });
-    },
-  });
+  return h([
+    h(LayerButton, {
+      name,
+      active: useIsActive(layer),
+      onClick() {
+        dispatch({ type: "toggle-overlay", value: layer });
+      },
+    }),
+    h.if(footprintsLayer != null)(Switch, {
+      label: "Footprints",
+      checked: useIsActive(footprintsLayer),
+      onChange: () => {
+        dispatch({ type: "toggle-overlay", value: footprintsLayer });
+      },
+    }),
+  ]);
 }
 
 export function LayerSelectorPanel() {
@@ -75,11 +85,13 @@ export function LayerSelectorPanel() {
       description:
         "High-resolution imagery (up to 25 cm/pixel). Currently limited to the Perseverance landing site.",
       layer: OverlayLayer.HiRISE,
+      footprintsLayer: OverlayLayer.HiRISEFootprints,
     }),
     h(LayerToggle, {
       name: "Orthoimagery",
       layer: OverlayLayer.Ortho,
       description: "Orthoimagery for elevation models",
+      footprintsLayer: OverlayLayer.OrthophotoFooprints,
     }),
     h(LayerToggle, {
       name: "Global uncontrolled HiRISE",
