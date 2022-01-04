@@ -1,5 +1,5 @@
 import h from "@macrostrat/hyper";
-import { Map, Marker, Popup, TileLayer, withLeaflet } from "react-leaflet";
+import { Map, TileLayer, withLeaflet } from "react-leaflet";
 import VectorGrid from "react-leaflet-vectorgrid";
 import "leaflet/dist/leaflet.css";
 

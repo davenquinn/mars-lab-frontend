@@ -20,6 +20,10 @@ import { VectorLayer, OverlayLayer } from "./base";
 
 const MARS_RADIUS_SCALAR = 3390 / 6371;
 
+function tileServerURL(uri: string) {
+  return process.env.TILE_SERVER_URL + uri;
+}
+
 // These mosaics are static, ours are dynamic.
 function ArcMDIMLayer(props: GeoLayerProps) {
   return h(ArcGISAstroImageryProvider, {
@@ -44,7 +48,9 @@ function ArcHiRISELayer(props: GeoLayerProps) {
 
 const HiRISELayer = (props: GeoLayerProps) => {
   return h(BaseImageryLayer, {
-    url: `https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`,
+    url: tileServerURL(
+      `/mosaic/hirise_red/tiles/{TileMatrix}/{TileCol}/{TileRow}.png`
+    ),
     credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
     tileWidth: 256,
@@ -54,7 +60,9 @@ const HiRISELayer = (props: GeoLayerProps) => {
 
 const OrthoLayer = (props: GeoLayerProps) => {
   return h(BaseImageryLayer, {
-    url: `https://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,255`,
+    url: tileServerURL(
+      `/mosaic/orthoimage/tiles/{TileMatrix}/{TileCol}/{TileRow}.png?rescale=0,255`
+    ),
     credit: "USGS/HiRISE",
     colorToAlpha: Cesium.Color.BLACK,
     tileWidth: 256,
@@ -103,7 +111,7 @@ let bounds = {
 class MarsTerrainProvider extends MapboxTerrainProvider {
   RADIUS_SCALAR = MARS_RADIUS_SCALAR;
   meshErrorScalar = 1;
-  levelOfDetailScalar = 8;
+  levelOfDetailScalar = 4;
   credit = new Credit(
     "University of Arizona - HiRISE, CTX, PDS Imaging Node, HRSC Mission Team"
   );
@@ -115,7 +123,7 @@ class MarsTerrainProvider extends MapboxTerrainProvider {
   buildTileURL(tileCoords: TileCoordinates) {
     const { z, x, y } = tileCoords;
     const hires = this.highResolution ? "@2x" : "";
-    return `https://argyre.geoscience.wisc.edu/tiles/elevation-mosaic/tiles/${z}/${x}/${y}${hires}.png?resampling_method=bilinear`;
+    return tileServerURL(`/elevation-mosaic/tiles/${z}/${x}/${y}${hires}.png`);
   }
 
   getTileDataAvailable(x, y, z) {
@@ -150,7 +158,7 @@ const ImageryLayers = () => {
   return h([
     h(ImageryLayerCollection, null, [
       h.if(overlays.has(OverlayLayer.HiRISEFootprints))(GeoJsonDataSource, {
-        data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/hirise_red/assets",
+        data: tileServerURL("/mosaic/hirise_red/assets"),
         //markerColor: Cesium.Color.RED,
         stroke: Cesium.Color.RED,
         fill: Cesium.Color.RED.withAlpha(0.2),
@@ -158,7 +166,7 @@ const ImageryLayers = () => {
         clampToGround: true,
       }),
       h.if(overlays.has(OverlayLayer.OrthophotoFooprints))(GeoJsonDataSource, {
-        data: "https://argyre.geoscience.wisc.edu/tiles/mosaic/orthoimage/assets",
+        data: tileServerURL("/mosaic/orthoimage/assets"),
         //markerColor: Cesium.Color.GREEN,
         stroke: Cesium.Color.GREEN,
         fill: Cesium.Color.GREEN.withAlpha(0.2),

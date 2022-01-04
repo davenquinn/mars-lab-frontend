@@ -127,6 +127,10 @@ module.exports = {
       ],
     }),
     new HtmlWebpackPlugin({ title: "Mars Lab" }),
+    new EnvironmentPlugin({
+      PUBLIC_URL: "/",
+      MAPBOX_API_TOKEN: "",
+    }),
     new DefinePlugin({
       GITHUB_LINK: JSON.stringify(GITHUB_LINK),
       CESIUM_BASE_URL: JSON.stringify(cesiumBase),
@@ -139,11 +143,8 @@ module.exports = {
       GITHUB_REV_LINK: JSON.stringify(
         GITHUB_LINK + "/tree/" + gitRevisionPlugin.commithash()
       ),
+      GITHUB_LINK,
     }),
-    new EnvironmentPlugin({
-      API_BASE_URL: "http://localhost:8080",
-      PUBLIC_URL: "/",
-      MAPBOX_API_TOKEN: "",
-    }),
+    new DotenvPlugin({ defaults: true }),
   ],
 };
