@@ -7,8 +7,11 @@ import {
   MarsHillshadeLayer,
   //MapboxVectorTileImageryProvider,
 } from "cesium-viewer/layers";
-import MapboxTerrainProvider, {
+import {
+  MartiniTerrainProvider,
   TileCoordinates,
+  DefaultHeightmapResource,
+  StretchedTilingScheme,
 } from "@macrostrat/cesium-martini";
 import SphericalMercator from "@mapbox/sphericalmercator";
 const Cesium: any = require("cesiumSource/Cesium");
@@ -108,28 +111,29 @@ let bounds = {
   n: 23,
 };
 
-class MarsTerrainProvider extends MapboxTerrainProvider {
-  RADIUS_SCALAR = MARS_RADIUS_SCALAR;
+const tilingScheme = new StretchedTilingScheme({
+  ellipsoid: Cesium.Ellipsoid.MARSIAU2000,
+});
+
+let resource = new DefaultHeightmapResource({
+  url: tileServerURL(`/elevation-mosaic/tiles/{z}/{x}/{y}.png`),
+});
+class MarsTerrainProvider extends MartiniTerrainProvider {
   meshErrorScalar = 1;
-  levelOfDetailScalar = 4;
+  levelOfDetailScalar = 8;
   credit = new Credit(
     "University of Arizona - HiRISE, CTX, PDS Imaging Node, HRSC Mission Team"
   );
 
   constructor(opts = {}) {
-    super({ ...opts, highResolution: false });
-  }
-
-  buildTileURL(tileCoords: TileCoordinates) {
-    const { z, x, y } = tileCoords;
-    const hires = this.highResolution ? "@2x" : "";
-    return tileServerURL(`/elevation-mosaic/tiles/${z}/${x}/${y}${hires}.png`);
+    super({ ...opts, tilingScheme, resource });
   }
 
   getTileDataAvailable(x, y, z) {
     // const [w, s, e, n] = merc.bbox(x, y, z);
     // if (e < bounds.w || w > bounds.e || n < bounds.s || s > bounds.n)
     //   return false;
+    if (z % 2 == 1) return false;
     return true;
   }
 }

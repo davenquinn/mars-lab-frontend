@@ -40,7 +40,7 @@ const Viewer = () => {
     CesiumViewer,
     {
       terrainProvider,
-      terrainExaggeration: exaggeration / terrainProvider.RADIUS_SCALAR,
+      terrainExaggeration: exaggeration,
       displayQuality,
       showInspector: debug,
       onClick(position) {
