@@ -12,12 +12,14 @@ import {
 import { DisplayQuality } from "cesium-viewer";
 import positions from "./positions.js";
 import { createStore } from "redux";
+import { useSelector, useDispatch } from "react-redux";
 import update from "immutability-helper";
 import {
   getHashString,
   setHashString,
 } from "@macrostrat/ui-components/lib/esm/util/query-string";
 import { OverlayLayer } from "./layers/base";
+import { ContourOptions, defaultContourOptions } from "./layers/contour";
 
 enum MapBackend {
   Flat,
@@ -40,6 +42,7 @@ type AppState = GlobeState & {
   selectedFeatures: MapFeature[];
   selectedLocation: GeographicLocation | null;
   visibleMaps: Set<string> | null;
+  contourOptions: ContourOptions;
 };
 
 type ToggleOverlay = {
@@ -62,6 +65,8 @@ type DismissSelectionPanel = { type: "dismiss-selection-panel" };
 
 type ExpandUI = { type: "expand-ui"; value: boolean };
 
+type SetContourOptions = { type: "set-contour-options"; value: ContourOptions };
+
 type AppAction =
   | GlobeAction
   | ToggleOverlay
@@ -71,6 +76,7 @@ type AppAction =
   | ToggleMoveOnScroll
   | MapClicked
   | DismissSelectionPanel
+  | SetContourOptions
   | ExpandUI;
 
 interface PositionHashParams {
@@ -208,6 +214,8 @@ const newReducer = (state: AppState, action: AppAction) => {
       return { ...state, selectedLocation: action.position };
     case "expand-ui":
       return { ...state, uiExpanded: action.value };
+    case "set-contour-options":
+      return { ...state, contourOptions: action.value };
     default:
       return reducer(state, action);
   }
@@ -249,6 +257,7 @@ const initialState: AppState = {
   ),
   mapBackend: mapBackend == "2d" ? MapBackend.Flat : MapBackend.Globe,
   debug: false,
+  contourOptions: defaultContourOptions,
 };
 
 let store = createStore(
@@ -257,4 +266,20 @@ let store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-export { MapBackend, OverlayLayer, AppState, AppAction, store };
+function useAppState(selector: ((s: AppState) => any) | undefined): any {
+  return useSelector(selector);
+}
+
+function useAppDispatch() {
+  return useDispatch<AppAction>();
+}
+
+export {
+  MapBackend,
+  OverlayLayer,
+  AppState,
+  AppAction,
+  store,
+  useAppState as useSelector,
+  useAppDispatch as useDispatch,
+};

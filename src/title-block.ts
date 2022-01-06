@@ -12,7 +12,7 @@ const Link = ({ to, children, ...rest }) => {
   return h(
     "li",
     null,
-    h(NavLink, { to, activeClassName: styles["is-active"], ...rest }, children)
+    h(NavLink, { to, activeClassName: styles["active"], ...rest }, children)
   );
 };
 

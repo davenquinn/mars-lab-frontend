@@ -1,0 +1,32 @@
+$main=rgb(250, 128, 114)
+
+:root
+  --accent-color: $main
+  --accent-dark: darken($main, 25%)
+  --accent-darker: darken($main, 35%)
+  --accent-background-dark: lighten($main, 15)
+  --accent-background: lighten($main, 20)
+  --accent-background-light: lighten($main, 25)
+  --main-font: "Source Serif Pro", "Times New Roman", serif
+  --mono-font: "Source Code Pro", mono
+  --main-padding: 1rem
+  --small-margin: 0.2em
+  --normal-margin: 0.5em
+ 
+link_button()
+  text-decoration none
+  font-weight 300
+  display block
+  color var(--accent-dark)
+  padding 0.1em 0.25em
+  margin-bottom var(--small-margin)
+  border-radius 3px
+  cursor pointer
+  &:hover
+    background-color var(--accent-background-dark) !important
+    color var(--accent-darker)
+    text-decoration: none
+  &:visited
+    color var(--accent-dark)
+  &.active
+    background-color var(--accent-background)

@@ -1,6 +1,58 @@
 import { Material, Color } from "cesium";
 import { useCesium } from "resium";
+import { NumericInput, FormGroup, Collapse } from "@blueprintjs/core";
+import { ExpandableControlsView } from "../controls";
+import h from "../hyper";
 // Code from Cesium js sandcastle
+
+export interface ContourOptions {
+  hasContour: boolean;
+  contourWidth?: number;
+  contourSpacing?: number;
+  minHeight?: number;
+  maxHeight?: number;
+}
+
+export const defaultContourOptions = {
+  hasContour: false,
+  selectedShading: "none",
+  contourWidth: 1.0,
+  contourSpacing: 50,
+  minHeight: -4000, // approximate dead sea elevation
+  maxHeight: 15000, // approximate everest elevation
+};
+
+interface ContourControlsOptions {
+  options: ContourOptions;
+  setOptions(options: ContourOptions): void;
+}
+
+export function ContourControlsView({
+  options = defaultContourOptions,
+  setOptions,
+}: ContourControlsOptions) {
+  return h(
+    ExpandableControlsView,
+    {
+      name: "Contours",
+      active: options.hasContour,
+      setActive() {
+        setOptions({ ...options, hasContour: !options.hasContour });
+      },
+    },
+    h(FormGroup, { inline: true, label: "Interval" }, [
+      h(NumericInput, {
+        placeholder: "Contour interval",
+        value: options.contourSpacing,
+        max: 1000,
+        min: 5,
+        onValueChange(value) {
+          setOptions({ ...options, contourSpacing: value });
+        },
+      }),
+    ])
+  );
+}
 
 function getElevationContourMaterial() {
   // Creates a composite material with both elevation shading and contour lines
@@ -108,14 +160,15 @@ var contourColor = Color.WHITE;
 var contourUniforms = {};
 var shadingUniforms = {};
 
-export function useGlobeMaterial({
-  hasContour = true,
-  selectedShading = "elevation",
-  contourWidth = 1.0,
-  contourSpacing = 10,
-  minHeight = -414.0, // approximate dead sea elevation
-  maxHeight = 8777.0, // approximate everest elevation
-} = {}) {
+export function useGlobeMaterial(opts: ContourOptions = defaultContourOptions) {
+  const {
+    hasContour,
+    contourWidth,
+    contourSpacing,
+    minHeight, // approximate dead sea elevation
+    maxHeight, // approximate everest elevation
+  } = opts;
+  const selectedShading = "none";
   const { viewer } = useCesium();
   var globe = viewer.scene.globe;
   var material;
