@@ -20,6 +20,7 @@ import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
 import { MapBackend, store } from "./state";
 import { SelectedLocation } from "./selected-location";
+import { useGlobeMaterial } from "./layers/contour";
 
 const h = hyperStyled(styles);
 
@@ -29,6 +30,11 @@ const MapSelectedPoint = () => {
   const position = useSelector((d) => d.selectedLocation);
   return h(SelectedPoint, { point: position });
 };
+
+function GlobeMaterials() {
+  useGlobeMaterial();
+  return null;
+}
 
 const Viewer = () => {
   const displayQuality = useSelector((s) => s.displayQuality);
@@ -47,7 +53,7 @@ const Viewer = () => {
         dispatch({ type: "map-clicked", position });
       },
     },
-    [h(ImageryLayers), h(MapSelectedPoint)]
+    [h(ImageryLayers), h(MapSelectedPoint), h(GlobeMaterials)]
   );
 };
 
