@@ -4,6 +4,7 @@ import { useRef, useState, memo, useEffect } from "react";
 import { Provider } from "react-redux";
 import { MarsTerrainProvider, ImageryLayers } from "./layers";
 import useDimensions from "use-element-dimensions";
+import { Collapse } from "@blueprintjs/core";
 
 import CesiumViewer from "cesium-viewer";
 import { SelectedPoint } from "cesium-viewer/position";
@@ -90,19 +91,23 @@ const MainUI = ({ scrollParentRef, onContentResize = null, expanded }) => {
 
   return h("div.panel-main", { ref }, [
     h(TitleBlock),
-    h("div.scroll-pane", null, [
-      h("div.panel-body", [
-        h("div.panel-content", [
-          h(Switch, [
-            h(Route, { path: "/changelog" }, [
-              h(TextPanel, { html: changelogText, scrollParentRef }),
+    h(Collapse, { isOpen: expanded }, [
+      h("div.scroll-pane", null, [
+        h("div.panel-body", [
+          h("div.panel-content", [
+            h(Switch, [
+              h(Route, { path: "/changelog" }, [
+                h(TextPanel, { html: changelogText, scrollParentRef }),
+              ]),
+              h(Route, { path: "/about" }, [
+                h(TextPanel, { html: viewerText, scrollParentRef }),
+              ]),
+              h(Route, { path: "/", exact: true }, h(SettingsPanel)),
+              h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
+              h(Route, { path: "/list" }, [
+                h(PositionListEditor, { positions }),
+              ]),
             ]),
-            h(Route, { path: "/about" }, [
-              h(TextPanel, { html: viewerText, scrollParentRef }),
-            ]),
-            h(Route, { path: "/", exact: true }, h(SettingsPanel)),
-            h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
-            h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
           ]),
         ]),
       ]),
@@ -113,7 +118,7 @@ const MainUI = ({ scrollParentRef, onContentResize = null, expanded }) => {
 const UI = () => {
   const expanded = useSelector((s) => s.uiExpanded);
   const ref = useRef();
-  const [{ width, height }, setSize] = useState({ width: null, height: null });
+  //const [{ width, height }, setSize] = useState({ width: null, height: null });
 
   return h(Router, { basename: baseURL }, [
     h("div.left-stack", [
@@ -121,17 +126,18 @@ const UI = () => {
         "div.left-panel",
         {
           ref,
-          style: { height, width },
+          //style: { height, width },
           className: expanded ? "expanded" : "",
         },
         h(MainUI, {
           scrollParentRef: ref,
-          onContentResize({ width, height }) {
-            setSize({ width, height });
-          },
+          // onContentResize({ width, height }) {
+          //   setSize({ width, height });
+          // },
           expanded,
         })
       ),
+      h("div.spacer"),
     ]),
     h("div.spacer"),
   ]);

@@ -7,6 +7,8 @@
   max-height calc(100vh - 2em)
   overflow-y scroll
 
+
+
 .expanded
   .scroll-pane
     overflow-y scroll
@@ -54,7 +56,6 @@
 }
 
 .panel-body
-  display none
   flex 1
   padding-bottom var(--main-padding)
 
@@ -191,6 +192,7 @@
 .layer-button
   margin-bottom 0.5em
 
+
 .main-ui
   position: fixed
   z-index 10
@@ -199,6 +201,7 @@
   bottom 0
   display flex
   height 100vh
+  flex-direction: row
   pointer-events: none
   .left-panel
     pointer-events: all
@@ -207,13 +210,18 @@
     max-height: 100%
 
   .left-stack
+    flex 0
     position relative
     max-height 100%
     margin: 1.5em 1em
-  .spacer
-    flex-grow 1
+    .spacer
+      flex-grow 1
+
+  &>.spacer
+    flex-grow 5
   .panel-main, .modal-content
     width: fit-content
+    //min-width: 200px
     p
       min-width: 20em
   position relative
@@ -267,16 +275,18 @@ nav
 .title-block
   display flex
   flex-direction row
-  align-items baseline
+  align-items center
   justify-content: space-between
+  padding-top 12px
   margin-left -0.25em
-  line-height 1
+  line-height 0.8
+  min-width 10em
   h1,h2,h3,h4
     margin-bottom 0
     margin-top 0
     padding-bottom 0
     font-weight: 500
-    line-height: 1.0
+    line-height: 0.8
   .title
     font-size 1.4rem
     font-weight 500
