@@ -1,33 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500&family=Source+Serif+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap');
 @require "./text-panel/main.styl"
-
-$main=rgb(250, 128, 114)
-
-:root
-  --accent-color: $main
-  --accent-dark: darken($main, 25%)
-  --accent-darker: darken($main, 35%)
-  --accent-background: lighten($main, 20)
-  --accent-background-light: lighten($main, 25)
-  --main-font: "Source Serif Pro", "Times New Roman", serif
-  --mono-font: "Source Code Pro", mono
-  --main-padding: 1rem
-
-link_button()
-  text-decoration none
-  font-weight 300
-  display block
-  color var(--accent-dark)
-  padding 0.1em 0.25em
-  margin-right 0.25em
-  border-radius 3px
-  cursor pointer
-  &:hover
-    background-color var(--accent-background-light)
-  &:visited
-    color var(--accent-dark)
-  &.is-active
-    background-color var(--accent-background)
+@require "./_defs.styl"
 
 .left-panel
   position relative
@@ -39,15 +12,18 @@ link_button()
     overflow-y scroll
     position relative
     height 100%
-  .panel-content
+  .panel-main
     min-width: 15em
 
 
-.panel-content
+.panel-main
   display flex
   flex-direction: column
   width 100%
   color lighten(black, 30%)
+
+.panel-content
+  position relative
 
 .title-block, .panel-body
   padding-left var(--main-padding)
@@ -91,8 +67,11 @@ link_button()
 
 :global
   *
-    font-family: var(--main-font)
     box-sizing: border-box;
+
+  p, ul, dl, label, div
+    font-family: var(--main-font)
+
 
   h3
     margin 0.75em 0 0.5em
@@ -188,10 +167,6 @@ link_button()
       list-style none
       padding-left 0
 
-  .layer-button
-    display block
-    link_button()
-
   #changelog
     font-size 0.8em
     color #444
@@ -237,11 +212,14 @@ link_button()
     margin: 1.5em 1em
   .spacer
     flex-grow 1
-  .panel-content, .modal-content
+  .panel-main, .modal-content
     width: fit-content
     p
       min-width: 20em
   position relative
+
+:global(.bp3-numeric-input)>*
+  flex: 1
 
 
 @media screen and (max-width 600px)

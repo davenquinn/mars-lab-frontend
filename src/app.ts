@@ -1,7 +1,7 @@
 import { hyperStyled } from "@macrostrat/hyper";
 import { APIProvider } from "@macrostrat/ui-components";
 import { useRef, useState, memo, useEffect } from "react";
-import { Provider, useSelector, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { MarsTerrainProvider, ImageryLayers } from "./layers";
 import useDimensions from "use-element-dimensions";
 
@@ -18,17 +18,23 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import viewerText from "../text/output/viewer.html";
 import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
-import { MapBackend, store } from "./state";
+import { MapBackend, store, useSelector, useDispatch } from "./state";
 import { SelectedLocation } from "./selected-location";
+import { useGlobeMaterial } from "./layers/contour";
 
 const h = hyperStyled(styles);
 
-const terrainProvider = new MarsTerrainProvider();
+const terrainProvider = new MarsTerrainProvider({ minZoomLevel: 0 });
 
 const MapSelectedPoint = () => {
   const position = useSelector((d) => d.selectedLocation);
   return h(SelectedPoint, { point: position });
 };
+
+function GlobeMaterials() {
+  useGlobeMaterial(useSelector((s) => s.contourOptions));
+  return null;
+}
 
 const Viewer = () => {
   const displayQuality = useSelector((s) => s.displayQuality);
@@ -47,7 +53,7 @@ const Viewer = () => {
         dispatch({ type: "map-clicked", position });
       },
     },
-    [h(ImageryLayers), h(MapSelectedPoint)]
+    [h(ImageryLayers), h(MapSelectedPoint), h(GlobeMaterials)]
   );
 };
 
@@ -82,20 +88,22 @@ const MainUI = ({ scrollParentRef, onContentResize = null, expanded }) => {
     return h(SelectedLocation, { point: selectedLocation });
   }
 
-  return h("div.panel-content", { ref }, [
+  return h("div.panel-main", { ref }, [
     h(TitleBlock),
     h("div.scroll-pane", null, [
       h("div.panel-body", [
-        h(Switch, [
-          h(Route, { path: "/changelog" }, [
-            h(TextPanel, { html: changelogText, scrollParentRef }),
+        h("div.panel-content", [
+          h(Switch, [
+            h(Route, { path: "/changelog" }, [
+              h(TextPanel, { html: changelogText, scrollParentRef }),
+            ]),
+            h(Route, { path: "/about" }, [
+              h(TextPanel, { html: viewerText, scrollParentRef }),
+            ]),
+            h(Route, { path: "/", exact: true }, h(SettingsPanel)),
+            h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
+            h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
           ]),
-          h(Route, { path: "/about" }, [
-            h(TextPanel, { html: viewerText, scrollParentRef }),
-          ]),
-          h(Route, { path: "/", exact: true }, h(SettingsPanel)),
-          h(Route, { path: "/layers" }, h(LayerSelectorPanel)),
-          h(Route, { path: "/list" }, [h(PositionListEditor, { positions })]),
         ]),
       ]),
     ]),

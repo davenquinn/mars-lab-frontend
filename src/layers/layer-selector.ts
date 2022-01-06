@@ -1,22 +1,11 @@
 import h from "@macrostrat/hyper";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "../state";
 import classNames from "classnames";
 import { ActiveMapLayer } from "cesium-viewer/actions";
 import { OverlayLayer } from "./base";
 import { Switch } from "@blueprintjs/core";
-
-const LayerButton = (props) => {
-  const { name, active, ...rest } = props;
-  const className = classNames({ "is-active": active });
-  return h(
-    "a.layer-button",
-    {
-      className,
-      ...rest,
-    },
-    name
-  );
-};
+import { ContourControlsView } from "./contour";
+import { ExpandableControlsView, LayerButton } from "../controls";
 
 const BaseLayerButton = (props) => {
   const baseLayer = useSelector((s) => s.mapLayer);
@@ -59,22 +48,36 @@ function useIsActive(lyr) {
 
 function LayerToggle({ name, layer, description, footprintsLayer }) {
   const dispatch = useDispatch();
-  return h([
-    h(LayerButton, {
+  const hasFootprints = footprintsLayer != null;
+  const active = useIsActive(layer);
+  return h(
+    ExpandableControlsView,
+    {
       name,
-      active: useIsActive(layer),
-      onClick() {
+      active,
+      setActive() {
         dispatch({ type: "toggle-overlay", value: layer });
       },
-    }),
-    h.if(footprintsLayer != null)(Switch, {
+    },
+    h.if(hasFootprints)(Switch, {
       label: "Footprints",
       checked: useIsActive(footprintsLayer),
       onChange: () => {
         dispatch({ type: "toggle-overlay", value: footprintsLayer });
       },
-    }),
-  ]);
+    })
+  );
+}
+
+function ContourControls() {
+  const contourOptions = useSelector((s) => s.contourOptions);
+  const dispatch = useDispatch();
+  return h(ContourControlsView, {
+    options: contourOptions,
+    setOptions(value) {
+      dispatch({ type: "set-contour-options", value });
+    },
+  });
 }
 
 export function LayerSelectorPanel() {
@@ -103,6 +106,7 @@ export function LayerSelectorPanel() {
       layer: OverlayLayer.ArcOrtho,
       description: "Global orthimagery",
     }),
+    h(ContourControls),
     //h(LayerToggle, { name: "Rover position", layer: OverlayLayer.Rover }),
     h("h3", "Base layers"),
     h(BaseLayerSelector),

@@ -1,0 +1,22 @@
+@require "../_defs.styl"  
+
+.layer-button
+  display block
+  link_button()
+
+.expanded-controls
+  padding var(--small-margin)
+  label
+    font-size 0.9em
+  &>:last-child
+    margin-bottom: 0
+
+.expandable-controls
+  .layer-button
+    margin 0
+  margin-bottom: var(--small-margin)
+  border-radius: 3px
+  border 1px solid transparent
+  &.active
+    background-color var(--accent-background-light)
+    border 1px solid var(--accent-background)
