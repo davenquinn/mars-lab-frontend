@@ -20,3 +20,5 @@ RUN node_modules/.bin/webpack
 FROM nginx AS web
 
 COPY --from=builder /frontend/dist /usr/share/nginx/html
+
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf

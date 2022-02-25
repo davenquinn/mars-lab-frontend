@@ -47,7 +47,7 @@ const OrientationsLayer = (rest) => {
     let prov = new MVTImageryProvider({
       style,
       maximumZoom: 18,
-      //minimumZoom: 10,
+      minimumZoom: 10,
     });
     // let filter: any = ["boolean", true];
     // if (visibleMaps != null) {
