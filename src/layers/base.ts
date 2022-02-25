@@ -68,6 +68,7 @@ export enum RasterLayer {
 export enum VectorLayer {
   HiRISEFootprints = "hirise-footprints",
   OrthophotoFooprints = "orthophotos",
+  Orientations = "orientations",
 }
 
 export const OverlayLayer = { ...RasterLayer, ...VectorLayer };
