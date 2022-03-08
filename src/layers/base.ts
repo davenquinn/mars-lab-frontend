@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { ReactNode, useRef } from "react";
 import {
   Credit,
   UrlTemplateImageryProvider,
@@ -8,6 +8,8 @@ import {
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
 import { GeoLayerProps } from "cesium-viewer/layers";
+import { useSelector, useDispatch } from "../state";
+import { ExpandableControlsView } from "../controls";
 
 export function ArcGISAstroImageryProvider(props: GeoLayerProps) {
   const { layerID, credit = "USGS / ESRI", ...rest } = props;
@@ -55,7 +57,7 @@ export function BaseImageryLayer(
   });
 }
 
-export enum RasterLayer {
+export enum OverlayLayer {
   HiRISE = "hirise",
   Ortho = "ortho",
   ArcHiRISE = "arc-hirise",
@@ -63,13 +65,36 @@ export enum RasterLayer {
   CRISM = "crism",
   Geology = "geology",
   Rover = "rover",
-}
-
-export enum VectorLayer {
   HiRISEFootprints = "hirise-footprints",
   OrthophotoFooprints = "orthophotos",
   Orientations = "orientations",
 }
 
-export const OverlayLayer = { ...RasterLayer, ...VectorLayer };
-export type OverlayLayer = RasterLayer & VectorLayer;
+export function useIsActive(lyr) {
+  const overlays = useSelector((s) => s.overlayLayers);
+  return overlays.has(lyr);
+}
+
+export function ExpandableLayerControl({
+  layer,
+  name,
+  children,
+}: {
+  layer: OverlayLayer;
+  name: string;
+  children: ReactNode;
+}) {
+  const dispatch = useDispatch();
+  const active = useIsActive(layer);
+  return h(
+    ExpandableControlsView,
+    {
+      name,
+      active,
+      setActive() {
+        dispatch({ type: "toggle-overlay", value: layer });
+      },
+    },
+    children
+  );
+}

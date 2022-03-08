@@ -2,9 +2,13 @@ import hyper from "@macrostrat/hyper";
 import styles from "./main.styl";
 import classNames from "classnames";
 import { Collapse } from "@blueprintjs/core";
-import React from "react";
 
 const h = hyper.styled(styles);
+
+export interface ControlOptions<T> {
+  options: T;
+  setOptions(options: T): void;
+}
 
 type LayerButtonProps = {
   name: string;

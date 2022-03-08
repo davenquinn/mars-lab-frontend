@@ -19,7 +19,7 @@ import { ImageryLayerCollection, GeoJsonDataSource } from "resium";
 import { ActiveMapLayer } from "cesium-viewer/actions";
 import { useSelector } from "react-redux";
 import { ArcGISAstroImageryProvider, BaseImageryLayer } from "./base";
-import { VectorLayer, OverlayLayer } from "./base";
+import { OverlayLayer } from "./base";
 import { OrientationsLayer } from "./orientations";
 
 const MARS_RADIUS_SCALAR = 3390 / 6371;
