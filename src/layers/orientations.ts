@@ -1,14 +1,18 @@
 import MVTImageryProvider from "mvt-imagery-provider";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
 
-function createStyle(visibleMaps = null) {
+function createFilter(tags = null) {
   let filter = ["boolean", true];
-  if (visibleMaps != null) {
-    filter = ["match", ["get", "map_id"], visibleMaps, true, false];
+  if (tags != null) {
+    const matches = tags.map((tag) => ["in", tag, ["get", "tags"]]);
+    filter = ["any", ...matches];
   }
+  return filter;
+}
 
+function createStyle(tags = null) {
   return {
     version: 8,
     sources: {
@@ -34,37 +38,29 @@ function createStyle(visibleMaps = null) {
           "line-color": ["get", "color"],
           "line-width": 1.5,
         },
-        filter,
+        filter: createFilter(tags),
       },
     ],
   };
 }
 
-const OrientationsLayer = (rest) => {
-  const style = createStyle(null);
+const OrientationsLayer = ({ tags, ...rest }) => {
   // This is a kind of crazy thing
   const provider = useMemo(() => {
+    const style = createStyle(tags);
+
     let prov = new MVTImageryProvider({
       style,
       maximumZoom: 18,
       minimumZoom: 10,
     });
-    // let filter: any = ["boolean", true];
-    // if (visibleMaps != null) {
-    //   filter = [
-    //     "match",
-    //     ["get", "map_id"],
-    //     Array.from(visibleMaps),
-    //     true,
-    //     false,
-    //   ];
-    // }
-    //console.log(filter);
-    //prov.mapboxRenderer.setFilter("map-units", filter, false);
-    //const res = prov.mapboxRenderer.setFilter("unit-edge", filter, false);
-    //res();
+
     return prov;
   }, []);
+
+  useEffect(() => {
+    provider.mapboxRenderer.setFilter("unit-edge", createFilter(tags));
+  }, [tags]);
 
   return h(ImageryLayer, { imageryProvider: provider, ...rest });
 };

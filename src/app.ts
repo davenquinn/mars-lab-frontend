@@ -1,6 +1,6 @@
 import { hyperStyled } from "@macrostrat/hyper";
 import { APIProvider } from "@macrostrat/ui-components";
-import { useRef, useState, memo, useEffect } from "react";
+import { useRef, memo, useEffect } from "react";
 import { Provider } from "react-redux";
 import { MarsTerrainProvider, ImageryLayers } from "./layers";
 import useDimensions from "use-element-dimensions";
