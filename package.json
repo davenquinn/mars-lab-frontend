@@ -40,6 +40,7 @@
   "dependencies": {
     "@macrostrat/cesium-martini": "file:./packages/cesium-martini",
     "@macrostrat/cesium-viewer": "file:./packages/cesium-viewer",
+    "@macrostrat/cesium-vector-provider": "file:./packages/cesium-vector-provider",
     "@macrostrat/hyper": "^2.0.0",
     "@macrostrat/ui-components": "^1.0.2",
     "@mapbox/sphericalmercator": "^1.1.0",
@@ -53,7 +54,6 @@
     "immutability-helper": "^3.1.1",
     "jquery": "^3.5.1",
     "leaflet": "^1.6.0",
-    "mvt-imagery-provider": "file:./packages/mvt-imagery-provider",
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^17.0.2",

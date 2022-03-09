@@ -3,10 +3,11 @@ import { useCesium } from "resium";
 import { NumericInput, FormGroup, Collapse } from "@blueprintjs/core";
 import { ExpandableControlsView } from "../controls";
 import h from "../hyper";
+import { ExpandableLayerControl } from "./base";
+import { OverlayLayer } from "../state";
 // Code from Cesium js sandcastle
 
 export interface ContourOptions {
-  hasContour: boolean;
   contourWidth?: number;
   contourSpacing?: number;
   minHeight?: number;
@@ -14,7 +15,6 @@ export interface ContourOptions {
 }
 
 export const defaultContourOptions = {
-  hasContour: false,
   selectedShading: "none",
   contourWidth: 1.0,
   contourSpacing: 50,
@@ -32,13 +32,10 @@ export function ContourControlsView({
   setOptions,
 }: ContourControlsOptions) {
   return h(
-    ExpandableControlsView,
+    ExpandableLayerControl,
     {
       name: "Contours",
-      active: options.hasContour,
-      setActive() {
-        setOptions({ ...options, hasContour: !options.hasContour });
-      },
+      layer: OverlayLayer.Contour,
     },
     h(FormGroup, { inline: true, label: "Interval" }, [
       h(NumericInput, {
@@ -160,9 +157,13 @@ var contourColor = Color.WHITE;
 var contourUniforms = {};
 var shadingUniforms = {};
 
-export function useGlobeMaterial(opts: ContourOptions = defaultContourOptions) {
+type MaterialOptions = ContourOptions & { hasContour: boolean };
+
+export function useGlobeMaterial(
+  opts: MaterialOptions = { ...defaultContourOptions, hasContour: false }
+) {
   const {
-    hasContour,
+    hasContour = false,
     contourWidth,
     contourSpacing,
     minHeight, // approximate dead sea elevation

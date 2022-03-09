@@ -1,14 +1,24 @@
-import MVTImageryProvider from "mvt-imagery-provider";
-import { useMemo } from "react";
+import MVTImageryProvider from "@macrostrat/cesium-vector-provider";
+import { useMemo, useEffect } from "react";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
+import { TagInput, FormGroup } from "@blueprintjs/core";
+import { ControlOptions } from "../controls";
+import { ExpandableLayerControl } from "./base";
+import { OverlayLayer } from "../state";
+// Code from Cesium js sandcastle
 
-function createStyle(visibleMaps = null) {
-  let filter = ["boolean", true];
-  if (visibleMaps != null) {
-    filter = ["match", ["get", "map_id"], visibleMaps, true, false];
+function createFilter(tags = null) {
+  let filter: any = ["boolean", true];
+  if (tags != null && tags.length != 0) {
+    const matches = tags.map((tag) => ["in", tag, ["get", "tags"]]);
+    filter = ["any", ...matches];
   }
+  console.log(filter);
+  return filter;
+}
 
+function createStyle(tags = null) {
   return {
     version: 8,
     sources: {
@@ -32,41 +42,68 @@ function createStyle(visibleMaps = null) {
         },
         paint: {
           "line-color": ["get", "color"],
-          "line-width": 1.5,
+          "line-width": 2.5,
         },
-        filter,
+        filter: createFilter(tags),
       },
     ],
   };
 }
 
-const OrientationsLayer = (rest) => {
-  const style = createStyle(null);
+const OrientationsLayer = ({ tags, ...rest }) => {
   // This is a kind of crazy thing
   const provider = useMemo(() => {
+    const style = createStyle(tags);
+
     let prov = new MVTImageryProvider({
       style,
       maximumZoom: 18,
       minimumZoom: 10,
     });
-    // let filter: any = ["boolean", true];
-    // if (visibleMaps != null) {
-    //   filter = [
-    //     "match",
-    //     ["get", "map_id"],
-    //     Array.from(visibleMaps),
-    //     true,
-    //     false,
-    //   ];
-    // }
-    //console.log(filter);
-    //prov.mapboxRenderer.setFilter("map-units", filter, false);
-    //const res = prov.mapboxRenderer.setFilter("unit-edge", filter, false);
-    //res();
+
     return prov;
-  }, []);
+  }, [tags]);
+
+  // useEffect(() => {
+  //   provider.mapboxRenderer.setFilter("unit-edge", createFilter(tags));
+  // }, [tags]);
 
   return h(ImageryLayer, { imageryProvider: provider, ...rest });
 };
 
-export { OrientationsLayer };
+// UI components
+
+export interface OrientationOptions {
+  tags: string[] | null;
+}
+
+export const defaultContourOptions = {
+  tags: null,
+};
+
+type OrientationControlsOptions = ControlOptions<OrientationOptions>;
+
+export function OrientationControls({
+  options = defaultContourOptions,
+  setOptions,
+}: OrientationControlsOptions) {
+  return h(
+    ExpandableLayerControl,
+    {
+      name: "Orientations",
+      layer: OverlayLayer.Orientations,
+      description: "Bedding traces from orienteer",
+    },
+    h(FormGroup, { label: "Tag filter" }, [
+      h(TagInput, {
+        values: options.tags ?? [],
+        fill: true,
+        onChange(values) {
+          setOptions({ tags: values });
+        },
+      }),
+    ])
+  );
+}
+
+export { OrientationsLayer, OrientationControlsOptions };

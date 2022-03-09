@@ -4,6 +4,6 @@
 [submodule "packages/cesium-martini"]
 	path = packages/cesium-martini
 	url = git://github.com/davenquinn/cesium-martini.git
-[submodule "packages/mvt-imagery-provider"]
-	path = packages/mvt-imagery-provider
-	url = git://github.com/davenquinn/MVTImageryProvider.git
+[submodule "packages/cesium-vector-provider"]
+	path = packages/cesium-vector-provider
+	url = git://github.com/davenquinn/cesium-vector-provider.git

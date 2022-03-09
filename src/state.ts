@@ -42,7 +42,7 @@ type AppState = GlobeState & {
   selectedFeatures: MapFeature[];
   selectedLocation: GeographicLocation | null;
   visibleMaps: Set<string> | null;
-  contourOptions: ContourOptions;
+  layerOptions: Map<OverlayLayer, any>;
 };
 
 type ToggleOverlay = {
@@ -67,6 +67,12 @@ type ExpandUI = { type: "expand-ui"; value: boolean };
 
 type SetContourOptions = { type: "set-contour-options"; value: ContourOptions };
 
+type SetLayerOptions = {
+  type: "set-layer-options";
+  layer: OverlayLayer;
+  options: any;
+};
+
 type AppAction =
   | GlobeAction
   | ToggleOverlay
@@ -77,6 +83,7 @@ type AppAction =
   | MapClicked
   | DismissSelectionPanel
   | SetContourOptions
+  | SetLayerOptions
   | ExpandUI;
 
 interface PositionHashParams {
@@ -214,8 +221,10 @@ const newReducer = (state: AppState, action: AppAction) => {
       return { ...state, selectedLocation: action.position };
     case "expand-ui":
       return { ...state, uiExpanded: action.value };
-    case "set-contour-options":
-      return { ...state, contourOptions: action.value };
+    case "set-layer-options":
+      const layerOptions = new Map(state.layerOptions.entries());
+      layerOptions.set(action.layer, action.options);
+      return { ...state, layerOptions };
     default:
       return reducer(state, action);
   }
@@ -257,7 +266,7 @@ const initialState: AppState = {
   ),
   mapBackend: mapBackend == "2d" ? MapBackend.Flat : MapBackend.Globe,
   debug: false,
-  contourOptions: defaultContourOptions,
+  layerOptions: new Map(),
 };
 
 let store = createStore(

@@ -1,11 +1,13 @@
 import h from "@macrostrat/hyper";
+import { ReactNode } from "react";
 import { useSelector, useDispatch } from "../state";
-import classNames from "classnames";
 import { ActiveMapLayer } from "cesium-viewer/actions";
-import { OverlayLayer } from "./base";
+import { OverlayLayer, ExpandableLayerControl } from "./base";
 import { Switch } from "@blueprintjs/core";
 import { ContourControlsView } from "./contour";
-import { ExpandableControlsView, LayerButton } from "../controls";
+import { OrientationControls } from "./orientations";
+import { LayerButton } from "../controls";
+import { useIsActive } from "./base";
 
 const BaseLayerButton = (props) => {
   const baseLayer = useSelector((s) => s.mapLayer);
@@ -41,23 +43,25 @@ function BaseLayerSelector() {
   ]);
 }
 
-function useIsActive(lyr) {
-  const overlays = useSelector((s) => s.overlayLayers);
-  return overlays.has(lyr);
-}
-
-function LayerToggle({ name, layer, description, footprintsLayer }) {
+function LayerToggle({
+  name,
+  layer,
+  description,
+  footprintsLayer,
+}: {
+  name: string;
+  layer: OverlayLayer;
+  description: string;
+  footprintsLayer?: OverlayLayer;
+  children?: ReactNode;
+}) {
   const dispatch = useDispatch();
   const hasFootprints = footprintsLayer != null;
-  const active = useIsActive(layer);
   return h(
-    ExpandableControlsView,
+    ExpandableLayerControl,
     {
       name,
-      active,
-      setActive() {
-        dispatch({ type: "toggle-overlay", value: layer });
-      },
+      layer,
     },
     h.if(hasFootprints)(Switch, {
       label: "Footprints",
@@ -69,25 +73,36 @@ function LayerToggle({ name, layer, description, footprintsLayer }) {
   );
 }
 
-function ContourControls() {
-  const contourOptions = useSelector((s) => s.contourOptions);
+function useLayerOptions(layer: OverlayLayer) {
+  const options = useSelector((d) => d.layerOptions.get(layer));
   const dispatch = useDispatch();
+  const setOptions = (options) => {
+    dispatch({
+      type: "set-layer-options",
+      layer,
+      options,
+    });
+  };
+  return [options, setOptions];
+}
+
+function ContourControls() {
+  const [options, setOptions] = useLayerOptions(OverlayLayer.Contour);
   return h(ContourControlsView, {
-    options: contourOptions,
-    setOptions(value) {
-      dispatch({ type: "set-contour-options", value });
-    },
+    options,
+    setOptions,
   });
+}
+
+function OrientationLayerControls() {
+  const [options, setOptions] = useLayerOptions(OverlayLayer.Orientations);
+  return h(OrientationControls, { options, setOptions });
 }
 
 export function LayerSelectorPanel() {
   return h("div.layer-selector", [
     h("h3", "Overlays"),
-    h(LayerToggle, {
-      name: "Traces",
-      layer: OverlayLayer.Orientations,
-      description: "Bedding traces from orienteer",
-    }),
+    h(OrientationLayerControls),
     h(LayerToggle, {
       name: "HiRISE imagery",
       description:

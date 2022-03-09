@@ -15,8 +15,9 @@
     "outDir": "dist/lib",
     "typeRoots": ["node_modules/@types"],
     "paths": {
-      "cesium-viewer": ["./packages/cesium-viewer/src"]
+      "cesium-viewer": ["./packages/cesium-viewer/src"],
+      "cesiun-vector-provider": ["./packages/cesium-vector-provider/src"]
     }
   },
-  "include": ["src", "packages/cesium-viewer/src"]
+  "include": ["src", "packages/cesium-viewer/src", "packages/cesium-vector-provider/src"]
 }

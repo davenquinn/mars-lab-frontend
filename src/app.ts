@@ -1,6 +1,6 @@
 import { hyperStyled } from "@macrostrat/hyper";
 import { APIProvider } from "@macrostrat/ui-components";
-import { useRef, useState, memo, useEffect } from "react";
+import { useRef, memo, useEffect } from "react";
 import { Provider } from "react-redux";
 import { MarsTerrainProvider, ImageryLayers } from "./layers";
 import useDimensions from "use-element-dimensions";
@@ -19,9 +19,15 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import viewerText from "../text/output/viewer.html";
 import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
-import { MapBackend, store, useSelector, useDispatch } from "./state";
+import {
+  MapBackend,
+  store,
+  useSelector,
+  useDispatch,
+  OverlayLayer,
+} from "./state";
 import { SelectedLocation } from "./selected-location";
-import { useGlobeMaterial } from "./layers/contour";
+import { defaultContourOptions, useGlobeMaterial } from "./layers/contour";
 
 const h = hyperStyled(styles);
 
@@ -33,7 +39,13 @@ const MapSelectedPoint = () => {
 };
 
 function GlobeMaterials() {
-  useGlobeMaterial(useSelector((s) => s.contourOptions));
+  const opts =
+    useSelector((s) => s.layerOptions.get(OverlayLayer.Contour)) ??
+    defaultContourOptions;
+  const lyrs = useSelector((s) => s.overlayLayers);
+  const contourEnabled = lyrs.has(OverlayLayer.Contour);
+
+  useGlobeMaterial({ ...opts, hasContour: contourEnabled });
   return null;
 }
 
