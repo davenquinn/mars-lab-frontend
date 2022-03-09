@@ -101,6 +101,12 @@ module.exports = {
         "cesium-viewer",
         "src"
       ),
+      "@macrostrat/cesium-vector-provider": path.resolve(
+        __dirname,
+        "packages",
+        "cesium-vector-provider",
+        "src"
+      ),
       "~": path.resolve(__dirname, "src"),
     },
     // Fallback to buffer

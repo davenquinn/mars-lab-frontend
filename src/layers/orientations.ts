@@ -1,4 +1,4 @@
-import MVTImageryProvider from "mvt-imagery-provider";
+import MVTImageryProvider from "@macrostrat/cesium-vector-provider";
 import { useMemo, useEffect } from "react";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
@@ -11,13 +11,8 @@ import { OverlayLayer } from "../state";
 function createFilter(tags = null) {
   let filter: any = ["boolean", true];
   if (tags != null && tags.length != 0) {
-    console.log(tags);
-    const matches = tags.map((tag) => [
-      "==",
-      ["string", tag],
-      ["at", 0, ["get", "tags"]],
-    ]);
-    filter = ["all", ["has", "tags"], ["any", ...matches]];
+    const matches = tags.map((tag) => ["in", tag, ["get", "tags"]]);
+    filter = ["any", ...matches];
   }
   console.log(filter);
   return filter;
@@ -47,7 +42,7 @@ function createStyle(tags = null) {
         },
         paint: {
           "line-color": ["get", "color"],
-          "line-width": 1.5,
+          "line-width": 2.5,
         },
         filter: createFilter(tags),
       },
