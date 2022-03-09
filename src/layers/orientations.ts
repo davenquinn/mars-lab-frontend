@@ -90,7 +90,7 @@ export function OrientationControls({
   return h(
     ExpandableLayerControl,
     {
-      name: "Orientations",
+      name: "Bedding traces",
       layer: OverlayLayer.Orientations,
       description: "Bedding traces from orienteer",
     },
