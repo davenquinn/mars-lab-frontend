@@ -160,6 +160,9 @@ const ImageryLayers = () => {
   const mapLayer = useSelector((s) => s.mapLayer);
   const overlays = useSelector((s) => s.overlayLayers);
   const visibleMaps = useSelector((s) => s.visibleMaps);
+  const orientationOpts = useSelector((s) =>
+    s.layerOptions.get(OverlayLayer.Orientations)
+  );
   return h([
     h(ImageryLayerCollection, null, [
       h.if(overlays.has(OverlayLayer.HiRISEFootprints))(GeoJsonDataSource, {
@@ -189,7 +192,10 @@ const ImageryLayers = () => {
       h.if(overlays.has(OverlayLayer.HiRISE))(HiRISELayer),
       h.if(overlays.has(OverlayLayer.Ortho))(OrthoLayer),
       h.if(overlays.has(OverlayLayer.ArcHiRISE))(ArcHiRISELayer),
-      h.if(overlays.has(OverlayLayer.Orientations))(OrientationsLayer),
+      h.if(overlays.has(OverlayLayer.Orientations))(
+        OrientationsLayer,
+        orientationOpts
+      ),
     ]),
   ]);
 };

@@ -2,6 +2,7 @@ import hyper from "@macrostrat/hyper";
 import styles from "./main.styl";
 import classNames from "classnames";
 import { Collapse } from "@blueprintjs/core";
+import { ErrorBoundary } from "@macrostrat/ui-components";
 
 const h = hyper.styled(styles);
 
@@ -50,7 +51,7 @@ export function ExpandableControlsView({
       h.if(children != null)(
         Collapse,
         { isOpen: active },
-        h("div.expanded-controls", null, children)
+        h(ErrorBoundary, null, h("div.expanded-controls", null, children))
       ),
     ]
   );

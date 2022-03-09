@@ -68,6 +68,7 @@ export enum OverlayLayer {
   HiRISEFootprints = "hirise-footprints",
   OrthophotoFooprints = "orthophotos",
   Orientations = "orientations",
+  Contour = "contour",
 }
 
 export function useIsActive(lyr) {

@@ -19,7 +19,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import viewerText from "../text/output/viewer.html";
 import changelogText from "../text/output/changelog.html";
 import { FlatMap } from "./map";
-import { MapBackend, store, useSelector, useDispatch } from "./state";
+import {
+  MapBackend,
+  store,
+  useSelector,
+  useDispatch,
+  OverlayLayer,
+} from "./state";
 import { SelectedLocation } from "./selected-location";
 import { useGlobeMaterial } from "./layers/contour";
 
@@ -33,7 +39,12 @@ const MapSelectedPoint = () => {
 };
 
 function GlobeMaterials() {
-  useGlobeMaterial(useSelector((s) => s.contourOptions));
+  const opts = useSelector((s) => s.layerOptions.get(OverlayLayer.Contour));
+  const contourEnabled = useSelector((s) =>
+    s.overlayLayers.has(OverlayLayer.Contour)
+  );
+
+  useGlobeMaterial({ ...opts, hasContours: contourEnabled });
   return null;
 }
 

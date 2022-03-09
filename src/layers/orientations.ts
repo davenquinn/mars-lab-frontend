@@ -2,18 +2,24 @@ import MVTImageryProvider from "mvt-imagery-provider";
 import { useMemo, useEffect } from "react";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
-import { NumericInput, FormGroup } from "@blueprintjs/core";
-import { ControlOptions, ExpandableControlsView } from "../controls";
-import { ExpandableLayerControl, useIsActive } from "./base";
+import { TagInput, FormGroup } from "@blueprintjs/core";
+import { ControlOptions } from "../controls";
+import { ExpandableLayerControl } from "./base";
 import { OverlayLayer } from "../state";
 // Code from Cesium js sandcastle
 
 function createFilter(tags = null) {
-  let filter = ["boolean", true];
-  if (tags != null) {
-    const matches = tags.map((tag) => ["in", tag, ["get", "tags"]]);
-    filter = ["any", ...matches];
+  let filter: any = ["boolean", true];
+  if (tags != null && tags.length != 0) {
+    console.log(tags);
+    const matches = tags.map((tag) => [
+      "==",
+      ["string", tag],
+      ["at", 0, ["get", "tags"]],
+    ]);
+    filter = ["all", ["has", "tags"], ["any", ...matches]];
   }
+  console.log(filter);
   return filter;
 }
 
@@ -61,11 +67,11 @@ const OrientationsLayer = ({ tags, ...rest }) => {
     });
 
     return prov;
-  }, []);
-
-  useEffect(() => {
-    provider.mapboxRenderer.setFilter("unit-edge", createFilter(tags));
   }, [tags]);
+
+  // useEffect(() => {
+  //   provider.mapboxRenderer.setFilter("unit-edge", createFilter(tags));
+  // }, [tags]);
 
   return h(ImageryLayer, { imageryProvider: provider, ...rest });
 };
@@ -82,7 +88,7 @@ export const defaultContourOptions = {
 
 type OrientationControlsOptions = ControlOptions<OrientationOptions>;
 
-export function OrientationControlsView({
+export function OrientationControls({
   options = defaultContourOptions,
   setOptions,
 }: OrientationControlsOptions) {
@@ -91,17 +97,16 @@ export function OrientationControlsView({
     {
       name: "Orientations",
       layer: OverlayLayer.Orientations,
+      description: "Bedding traces from orienteer",
     },
-    h(FormGroup, { inline: true, label: "Tags" }, [
-      // h(NumericInput, {
-      //   placeholder: "Contour interval",
-      //   value: options.contourSpacing,
-      //   max: 1000,
-      //   min: 5,
-      //   onValueChange(value) {
-      //     setOptions({ ...options, contourSpacing: value });
-      //   },
-      // }),
+    h(FormGroup, { label: "Tag filter" }, [
+      h(TagInput, {
+        values: options.tags ?? [],
+        fill: true,
+        onChange(values) {
+          setOptions({ tags: values });
+        },
+      }),
     ])
   );
 }

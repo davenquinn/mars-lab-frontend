@@ -5,6 +5,7 @@ import { ActiveMapLayer } from "cesium-viewer/actions";
 import { OverlayLayer, ExpandableLayerControl } from "./base";
 import { Switch } from "@blueprintjs/core";
 import { ContourControlsView } from "./contour";
+import { OrientationControls } from "./orientations";
 import { LayerButton } from "../controls";
 import { useIsActive } from "./base";
 
@@ -72,29 +73,36 @@ function LayerToggle({
   );
 }
 
-function ContourControls() {
-  const contourOptions = useSelector((s) => s.contourOptions);
+function useLayerOptions(layer: OverlayLayer) {
+  const options = useSelector((d) => d.layerOptions.get(layer));
   const dispatch = useDispatch();
+  const setOptions = (options) => {
+    dispatch({
+      type: "set-layer-options",
+      layer,
+      options,
+    });
+  };
+  return [options, setOptions];
+}
+
+function ContourControls() {
+  const [options, setOptions] = useLayerOptions(OverlayLayer.Contour);
   return h(ContourControlsView, {
-    options: contourOptions,
-    setOptions(value) {
-      dispatch({ type: "set-contour-options", value });
-    },
+    options,
+    setOptions,
   });
 }
 
-function OrientationControls() {
-  return h(LayerToggle, {
-    name: "Traces",
-    layer: OverlayLayer.Orientations,
-    description: "Bedding traces from orienteer",
-  });
+function OrientationLayerControls() {
+  const [options, setOptions] = useLayerOptions(OverlayLayer.Orientations);
+  return h(OrientationControls, { options, setOptions });
 }
 
 export function LayerSelectorPanel() {
   return h("div.layer-selector", [
     h("h3", "Overlays"),
-    h(OrientationControls),
+    h(OrientationLayerControls),
     h(LayerToggle, {
       name: "HiRISE imagery",
       description:
