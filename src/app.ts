@@ -27,7 +27,7 @@ import {
   OverlayLayer,
 } from "./state";
 import { SelectedLocation } from "./selected-location";
-import { useGlobeMaterial } from "./layers/contour";
+import { defaultContourOptions, useGlobeMaterial } from "./layers/contour";
 
 const h = hyperStyled(styles);
 
@@ -39,12 +39,13 @@ const MapSelectedPoint = () => {
 };
 
 function GlobeMaterials() {
-  const opts = useSelector((s) => s.layerOptions.get(OverlayLayer.Contour));
-  const contourEnabled = useSelector((s) =>
-    s.overlayLayers.has(OverlayLayer.Contour)
-  );
+  const opts =
+    useSelector((s) => s.layerOptions.get(OverlayLayer.Contour)) ??
+    defaultContourOptions;
+  const lyrs = useSelector((s) => s.overlayLayers);
+  const contourEnabled = lyrs.has(OverlayLayer.Contour);
 
-  useGlobeMaterial({ ...opts, hasContours: contourEnabled });
+  useGlobeMaterial({ ...opts, hasContour: contourEnabled });
   return null;
 }
 
