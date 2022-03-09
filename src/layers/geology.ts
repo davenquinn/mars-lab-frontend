@@ -1,4 +1,4 @@
-import MVTImageryProvider from "mvt-imagery-provider";
+import MVTImageryProvider from "@macrostrat/cesium-vector-provider";
 import { useEffect, useRef, useMemo } from "react";
 import h from "@macrostrat/hyper";
 import { ImageryLayer } from "resium";
